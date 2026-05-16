@@ -88,7 +88,7 @@
 
 ```bash
 # 1. 克隆仓库
-git clone https://github.com/JiangJie/what-claude-update.git
+git clone https://github.com/jovetickop/what-claude-update.git
 cd what-claude-update
 
 # 2. 双击运行
