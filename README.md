@@ -1,13 +1,121 @@
+# 🚀 What Claude Update — Claude Code Version Tracker
+
+> One-click tool to track every Claude Code CLI version update — with detailed Chinese usage guides and examples.
+
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D18-brightgreen.svg)](https://nodejs.org)
+[🌐 中文版](#中文版)
+
+## 📖 Overview
+
+**What Claude Update** is a zero-dependency version tracking tool. Double-click `update.bat` and it automatically fetches all Claude Code CLI release notes from the internet, generating a beautifully structured HTML page. Each feature includes **Chinese explanations, usage guides, and practical examples** — so you never miss a new capability.
+
+## ✨ Features
+
+| Feature | Description |
+|---------|-------------|
+| 🔄 **One-Click Update** | Double-click `update.bat` — fetches latest data and opens in browser |
+| 📦 **Incremental Sync** | Cached versions are kept forever; only new versions are fetched each run |
+| 🌐 **Bilingual UI** | Toggle between Chinese (with original usage guides) and English (raw release notes) |
+| 🃏 **Feature Cards** | Each feature gets a dedicated card, grouped by category (Plugins, Agent, CLI, Worktree...) |
+| 💡 **Usage Examples** | Every feature includes copy-paste terminal commands |
+| 🔍 **Smart Search** | Real-time filtering by version number or feature name; filter by major version |
+| 🎨 **Dark Mode** | Auto-follows system light/dark theme |
+| ⚡ **Zero Dependencies** | Uses only Node.js built-in modules — no `npm install` needed |
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- **Node.js >= 18** (built-in `fetch` support)
+- **Network connection** (accesses npm registry and GitHub API on first run)
+
+### Install & Run
+
+```bash
+# 1. Clone the repo
+git clone https://github.com/jovetickop/what-claude-update.git
+cd what-claude-update
+
+# 2. Double-click
+update.bat
+
+# Or run via command line
+node generate.js
+```
+
+First run takes ~15 seconds (fetches 409 versions + 112 release notes). Subsequent runs take ~3 seconds (incremental check only).
+
+### Output Structure
+
+```
+what-claude-update/
+├── update.bat              # Entry point (double-click)
+├── generate.js             # Core script
+├── claude-versions.html    # ← Generated output (open in browser)
+├── data/
+│   ├── kb.json             # Knowledge base (Chinese guides + examples)
+│   └── versions-cache.json # Version cache (incremental update base)
+└── README.md
+```
+
+## 📊 Data Sources
+
+| Source | What It Provides | Refresh |
+|--------|-----------------|---------|
+| [npm registry](https://www.npmjs.com/package/@anthropic-ai/claude-code) | 409 version numbers + release dates | Every run |
+| [GitHub Releases](https://github.com/anthropics/claude-code/releases) | Detailed changelogs for 112 versions | When new versions detected |
+| Local `kb.json` | 53+ curated feature descriptions in Chinese with examples | Manually expanded |
+
+## 🔧 Knowledge Base Contributions
+
+`data/kb.json` is the feature knowledge base. Each entry follows this structure:
+
+```json
+{
+  "plugin-dependency": {
+    "titleZh": "插件依赖管理",
+    "introducedIn": "2.1.143",
+    "category": "插件系统",
+    "changeType": "新增",
+    "enKeywords": ["plugin dependency", "plugin disable", "transitive dependencies"],
+    "descZh": "Claude Code now enforces plugin dependency rules...",
+    "usageSteps": [
+      "List plugins: claude plugin list",
+      "Enable plugin: claude plugin enable <plugin-name>"
+    ],
+    "tips": ["Plugins depended on by others cannot be disabled directly"]
+  }
+}
+```
+
+To add a new entry: follow the format above in `kb.json`. The key field is `enKeywords` — these English keywords are used to match against GitHub release notes.
+
+## 📝 Version Coverage
+
+| Major | Count | Date Range |
+|-------|-------|------------|
+| v2.x | 193 | 2025-12 ~ present |
+| v1.x | 121 | 2025-07 ~ 2025-12 |
+| v0.x | 95 | 2025-02 ~ 2025-07 |
+
+## 🤝 License
+
+MIT License
+
+---
+
+<h1 id="中文版">🌐 中文版</h1>
+
 # 🚀 What Claude Update — Claude Code 版本更新追踪器
 
 > 一键生成 Claude Code CLI 所有版本的更新详述，含中文使用指南和示例。
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Node.js](https://img.shields.io/badge/node-%3E%3D18-brightgreen.svg)](https://nodejs.org)
+[⬆ 返回英文版](#-what-claude-update--claude-code-version-tracker)
 
 ## 📖 简介
 
-**What Claude Update** 是一款零依赖的版本追踪工具。双击 `update.bat`，自动联网获取 Claude Code 从诞生至今所有版本的更新日志，生成精美 HTML 网页——每个功能都配有**中文说明、使用指南和实操示例**，让你再也不错过任何新功能。
+**What Claude Update** 是一款零依赖的版本追踪工具。双击 `update.bat`，自动联网获取 Claude Code 从诞生至今所有版本的更新日志，生成精美 HTML 网页——每个功能都配有**中文说明、使用指南和实操示例**。
 
 ## ✨ 核心特性
 
@@ -16,66 +124,11 @@
 | 🔄 **一键更新** | 双击 `update.bat`，自动获取最新版本数据并打开浏览器 |
 | 📦 **增量同步** | 已缓存的版本永久保留，每次只获取新增版本，秒级完成 |
 | 🌐 **中英双语** | 一键切换中文/英文模式，中文含原创使用指南，英文保留原始 release notes |
-| 🃏 **功能卡片** | 每个功能独立卡片，按分类分组展示（插件系统、Agent、CLI命令、工作树……） |
+| 🃏 **功能卡片** | 每个功能独立卡片，按分类分组（插件系统、Agent、CLI命令、工作树……） |
 | 💡 **使用示例** | 每个功能配有终端命令实操示例，可直接复制使用 |
 | 🔍 **智能搜索** | 搜索版本号或功能名，实时过滤；支持 v0.x / v1.x / v2.x 主版本筛选 |
 | 🎨 **深色模式** | 自动跟随系统深色/浅色主题 |
 | ⚡ **零依赖** | 仅使用 Node.js 内置模块，无需 npm install |
-
-## 🎯 页面预览
-
-### 整体布局
-
-```
-┌──────────────────────────────────────────────────────┐
-│  🚀 Claude Code 版本更新追踪                           │
-│  📅 数据更新：2026-05-16 | v2.1.143 | [🌐 中 / EN]   │
-├──────────────────────────────────────────────────────┤
-│  [409]        [v2.1.143]      [2025-02-24]    [53]   │
-│  收录版本      最新版本         首个版本        知识库   │
-├──────────────────────────────────────────────────────┤
-│  🔍 搜索版本或功能...    [全部] [v2.x] [v1.x] [v0.x]  │
-├──────────────────────────────────────────────────────┤
-│  ┌ v2.1.143 ────── 2026-05-15 ── 🆕 最新 ─────────┐ │
-│  │                                                   │ │
-│  │  🔌 插件系统 (2项变更)                              │ │
-│  │  ┌─────────────────────────────────────────────┐  │ │
-│  │  │ 🔌 插件依赖管理              [v2.1.143 新增]  │  │ │
-│  │  │ 现在禁用插件时会自动检查依赖关系...             │  │ │
-│  │  │                                              │  │ │
-│  │  │ 💡 使用指南:                                  │  │ │
-│  │  │   1. 查看已安装插件：claude plugin list        │  │ │
-│  │  │   2. 启用插件：claude plugin enable <name>     │  │ │
-│  │  │   3. 禁用插件：claude plugin disable <name>    │  │ │
-│  │  │                                              │  │ │
-│  │  │ ⚠️ 注意事项:                                  │  │ │
-│  │  │   - 被依赖的插件无法直接禁用                    │  │ │
-│  │  └─────────────────────────────────────────────┘  │ │
-│  │                                                   │ │
-│  │  🌲 工作树 (1项变更)                               │ │
-│  │  ┌ ... ───────────────────────────────────────┐  │ │
-│  └───────────────────────────────────────────────────┘ │
-│                                                       │
-│  ┌ v2.1.142 ────── 2026-05-14 ─────────────────────┐ │
-│  │  ...                                              │ │
-│  └───────────────────────────────────────────────────┘ │
-└──────────────────────────────────────────────────────┘
-```
-
-### 功能卡片详情
-
-每个知识库匹配的功能卡片包含四个部分：
-
-- **功能概述**：中文描述功能是什么、解决什么问题
-- **使用指南**：一步步的终端命令操作示例
-- **注意事项**：使用时需要注意的陷阱和最佳实践
-- **变更标签**：新增 / 修复 / 优化，一目了然
-
-### 中英双语切换
-
-- **中文模式**（默认）：展示知识库精心编写的中文说明 + 使用示例
-- **英文模式**：展示 GitHub 原始 release notes
-- 点击标题栏 `🌐 中 / EN` 按钮即时切换，无需刷新
 
 ## 🚀 快速开始
 
@@ -100,19 +153,6 @@ node generate.js
 
 首次运行约需 15 秒（获取 409 个版本 + 112 个 release notes），之后每次运行仅需 3 秒（增量检查）。
 
-### 输出
-
-```
-what-claude-update/
-├── update.bat              # 双击入口
-├── generate.js             # 核心脚本
-├── claude-versions.html    # ← 生成结果（浏览器打开）
-├── data/
-│   ├── kb.json             # 功能知识库（中文说明 + 使用示例）
-│   └── versions-cache.json # 版本缓存（增量更新基础）
-└── README.md
-```
-
 ## 📊 数据来源
 
 | 来源 | 用途 | 更新频率 |
@@ -123,7 +163,7 @@ what-claude-update/
 
 ## 🔧 知识库贡献
 
-`data/kb.json` 是功能知识库，每个条目结构如下：
+按以下格式在 `data/kb.json` 中新增条目即可，下次运行自动生效。关键是填写准确的 `enKeywords`（英文关键词），用于匹配 GitHub release notes 中的原始英文内容。
 
 ```json
 {
@@ -143,8 +183,6 @@ what-claude-update/
 }
 ```
 
-**添加新条目**：按上述格式在 `kb.json` 中新增即可，下次运行自动生效。关键是填写准确的 `enKeywords`（英文关键词），它们用于匹配 GitHub release notes 中的原始英文内容。
-
 ## 📝 版本收录范围
 
 | 主版本 | 版本数 | 时间范围 |
@@ -156,7 +194,3 @@ what-claude-update/
 ## 🤝 许可
 
 MIT License
-
----
-
-**双击 `update.bat`，每次都有新发现。**
