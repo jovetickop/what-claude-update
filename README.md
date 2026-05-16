@@ -10,6 +10,8 @@
 
 **What Claude Update** is a zero-dependency version tracking tool. Double-click `update.bat` and it automatically fetches all Claude Code CLI release notes from the internet, generating a beautifully structured HTML page. Each feature includes **Chinese explanations, usage guides, and practical examples** — so you never miss a new capability.
 
+![Screenshot](example.png)
+
 ## ✨ Features
 
 | Feature | Description |
