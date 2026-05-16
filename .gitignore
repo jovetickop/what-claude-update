@@ -1,0 +1,6 @@
+# 版本缓存（运行时自动生成，不需要提交）
+data/versions-cache.json
+
+# 临时文件
+data/_*.json
+_tmp_*.json

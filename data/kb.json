@@ -1,0 +1,1154 @@
+{
+  "plugin-dependency": {
+    "titleZh": "插件依赖管理",
+    "introducedIn": "2.1.143",
+    "category": "插件系统",
+    "changeType": "新增",
+    "descZh": "Claude Code 现在会自动检查插件之间的依赖关系。当尝试禁用一个被其他已启用插件所依赖的插件时，系统会拒绝操作并给出完整的依赖链提示。同时，启用插件时会自动强制启用其传递依赖。这样避免了因误操作导致插件功能异常。",
+    "usageSteps": [
+      "查看已安装插件：claude plugin list",
+      "启用某个插件（自动启用依赖）：claude plugin enable <plugin-name>",
+      "禁用插件（若有依赖会报错）：claude plugin disable <plugin-name>",
+      "强制禁用（跳过依赖检查）：claude plugin disable --force <plugin-name>",
+      "系统提示的依赖链可以直接复制粘贴执行来批量禁用"
+    ],
+    "tips": [
+      "如果看到依赖提示，按照提示的依赖链从下游到上游依次禁用",
+      "不建议随意使用 --force，可能导致依赖它的插件工作异常"
+    ],
+    "enKeywords": [
+      "plugin dependency",
+      "plugin enable",
+      "plugin disable",
+      "transitive dependencies",
+      "disable-chain"
+    ]
+  },
+  "projected-context-cost": {
+    "titleZh": "插件市场上下文消耗预估",
+    "introducedIn": "2.1.143",
+    "category": "插件系统",
+    "changeType": "新增",
+    "descZh": "在 /plugin 市场浏览面板中，每个插件现在都会显示预估的上下文消耗——包括每个对话轮次和每次调用的 Token 估算值。这样可以在安装插件之前就了解它对上下文窗口的影响，帮助你做出更明智的选择。",
+    "usageSteps": [
+      "进入插件市场：输入 /plugin 命令",
+      "浏览插件列表时会看到每个插件的 Token 消耗预估",
+      "per-turn：该插件每个对话轮次大约消耗的 token 数",
+      "per-invocation：该插件每次被调用时大约消耗的 token 数"
+    ],
+    "tips": [
+      "如果上下文窗口紧张，优先选择 per-turn 和 per-invocation 数值较小的插件"
+    ],
+    "enKeywords": [
+      "projected context cost",
+      "per-turn",
+      "per-invocation",
+      "token estimates",
+      "plugin marketplace"
+    ]
+  },
+  "worktree-bg-isolation": {
+    "titleZh": "后台会话工作树隔离模式设置",
+    "introducedIn": "2.1.143",
+    "category": "工作树",
+    "changeType": "新增",
+    "descZh": "新增 worktree.bgIsolation 设置项，支持 'none' 模式。当设置为 'none' 时，后台会话将直接在当前工作目录中进行编辑，无需通过 EnterWorktree 创建隔离的工作树。这对于无法使用 git worktree 的仓库（如大型 monorepo、非 git 项目等）非常有用。",
+    "usageSteps": [
+      "在 settings.json 中设置：\"worktree.bgIsolation\": \"none\"",
+      "或者在 CLAUDE.md 中设置：worktree.bgIsolation: none",
+      "设置后，后台 Agent 会话将直接在当前目录操作",
+      "默认为隔离模式（非 none），后台会话会创建独立的工作树"
+    ],
+    "tips": [
+      "仅在 git worktree 不可用或不适用时使用此设置",
+      "使用 none 模式时注意后台会话的修改会直接影响当前工作目录"
+    ],
+    "enKeywords": [
+      "worktree.bgIsolation",
+      "background sessions edit",
+      "working copy directly",
+      "EnterWorktree",
+      "worktrees are impractical"
+    ]
+  },
+  "powershell-bypass": {
+    "titleZh": "PowerShell 执行策略自动绕过",
+    "introducedIn": "2.1.143",
+    "category": "工具改进",
+    "changeType": "优化",
+    "descZh": "PowerShell 工具现在会自动传递 -ExecutionPolicy Bypass 参数，避免因系统执行策略限制导致脚本无法运行。在 Windows 上使用 PowerShell 时不再需要手动修改执行策略。",
+    "usageSteps": [
+      "无需额外配置，Claude Code 在调用 PowerShell 时自动添加 Bypass 参数",
+      "相当于每次执行：powershell -ExecutionPolicy Bypass -Command \"...\""
+    ],
+    "tips": [
+      "仅影响 Claude Code 内部的 PowerShell 调用，不会修改系统级别的执行策略"
+    ],
+    "enKeywords": [
+      "ExecutionPolicy Bypass",
+      "PowerShell tool",
+      "POWERSHELL_RESPECT_EXECUTION_POLICY"
+    ]
+  },
+  "agents-flags": {
+    "titleZh": "claude agents 子命令配置参数",
+    "introducedIn": "2.1.142",
+    "category": "Agent 系统",
+    "changeType": "新增",
+    "descZh": "claude agents 命令新增了多个配置参数，允许在启动后台 Agent 会话时指定自定义设置。你可以为每个分派的 Agent 单独配置工作目录、设置文件、MCP 配置、插件目录、权限模式、模型和思考力度等，实现精细化的后台任务控制。",
+    "usageSteps": [
+      "带自定义设置启动 Agent：claude agents --add-dir /path/to/project --model claude-sonnet-4-6 --effort high",
+      "指定权限模式：claude agents --permission-mode auto",
+      "使用自定义 settings：claude agents --settings /path/to/settings.json",
+      "配置 MCP 服务器：claude agents --mcp-config /path/to/mcp.json",
+      "加载插件目录：claude agents --plugin-dir /path/to/plugins",
+      "跳过权限检查（谨慎使用）：claude agents --dangerously-skip-permissions"
+    ],
+    "tips": [
+      "这些参数仅在当前会话的后台 Agent 中生效",
+      "--dangerously-skip-permissions 仅用于受信任的沙箱环境"
+    ],
+    "enKeywords": [
+      "claude agents flags",
+      "--add-dir",
+      "--settings",
+      "--mcp-config",
+      "--plugin-dir",
+      "--permission-mode",
+      "--model",
+      "--effort",
+      "dispatched background sessions"
+    ]
+  },
+  "fast-mode-opus47": {
+    "titleZh": "Fast Mode 默认使用 Opus 4.7",
+    "introducedIn": "2.1.142",
+    "category": "模型与性能",
+    "changeType": "优化",
+    "descZh": "Fast Mode 现在默认使用 Opus 4.7 模型（之前为 Opus 4.6），带来更快的输出速度和更好的响应质量。如果你希望继续使用 Opus 4.6，可以通过环境变量覆盖。",
+    "usageSteps": [
+      "Fast Mode 开关：使用 /fast 命令或 Alt+T 切换",
+      "查看当前模式：输入 /status 查看",
+      "锁定 Opus 4.6：设置环境变量 CLAUDE_CODE_OPUS_4_6_FAST_MODE_OVERRIDE=1"
+    ],
+    "tips": [
+      "Fast Mode 使用 Opus 模型但输出更快，适合大多数日常编程任务",
+      "如需深度推理，可以关闭 Fast Mode 使用完整推理模式"
+    ],
+    "enKeywords": [
+      "Fast mode",
+      "Opus 4.7",
+      "Opus 4.6",
+      "fast mode override",
+      "OPUS_4_6_FAST_MODE_OVERRIDE"
+    ]
+  },
+  "plugin-skill-md": {
+    "titleZh": "插件根目录 SKILL.md 自动注册为技能",
+    "introducedIn": "2.1.142",
+    "category": "插件系统",
+    "changeType": "新增",
+    "descZh": "当插件在根目录包含 SKILL.md 文件但没有 skills/ 子目录时，Claude Code 现在会自动将该 SKILL.md 识别为一个技能。这简化了简单插件的结构——不需要创建 skills/ 目录即可提供技能功能。",
+    "usageSteps": [
+      "在插件根目录放置 SKILL.md 文件",
+      "不需要创建 skills/ 子目录",
+      "Claude Code 会自动将该文件注册为可用技能",
+      "用户通过 /skill-name 即可调用"
+    ],
+    "tips": [
+      "如果有多个技能，仍然需要 skills/ 目录组织",
+      "单个技能的简单插件现在结构更简洁"
+    ],
+    "enKeywords": [
+      "SKILL.md",
+      "skills/ subdirectory",
+      "surfaced as a skill",
+      "root-level SKILL.md"
+    ]
+  },
+  "plugin-lsp-info": {
+    "titleZh": "插件详情页显示 LSP 服务器信息",
+    "introducedIn": "2.1.142",
+    "category": "插件系统",
+    "changeType": "新增",
+    "descZh": "/plugin 详情面板和 claude plugin details 命令现在会显示插件提供的 LSP（语言服务器）信息。安装插件前可以清楚地看到它将提供哪些语言的代码智能支持。",
+    "usageSteps": [
+      "查看插件详情：claude plugin details <plugin-name>",
+      "或在交互会话中输入 /plugin，选择插件查看详情",
+      "在详情中可以看到 LSP Servers 列表"
+    ],
+    "tips": [
+      "LSP 服务器会占用额外资源，安装前可以评估是否真正需要"
+    ],
+    "enKeywords": [
+      "LSP servers",
+      "plugin details",
+      "LSP server",
+      "/plugin details"
+    ]
+  },
+  "terminal-sequence": {
+    "titleZh": "Hook JSON 输出支持终端控制序列",
+    "introducedIn": "2.1.141",
+    "category": "Hook 系统",
+    "changeType": "新增",
+    "descZh": "Hook 的 JSON 输出中新增 terminalSequence 字段，允许 Hook 发出桌面通知、窗口标题更新和终端铃声等控制序列。即使没有实际的终端设备，Hook 也能通过这些序列与用户交互。",
+    "usageSteps": [
+      "在 Hook 配置中返回 JSON：{\"terminalSequence\": \"...\"}",
+      "桌面通知：使用 OSC 9 序列发送通知",
+      "窗口标题：使用 OSC 0/2 序列更新窗口标题",
+      "终端铃声：使用 \\a (BEL) 字符触发响铃"
+    ],
+    "tips": [
+      "\n支持的序列因终端模拟器而异，建议测试后再使用"
+    ],
+    "enKeywords": [
+      "terminalSequence",
+      "hook JSON",
+      "desktop notifications",
+      "window titles",
+      "terminal bells",
+      "controlling terminal"
+    ]
+  },
+  "plugin-prefer-https": {
+    "titleZh": "插件克隆协议切换（HTTPS/SSH）",
+    "introducedIn": "2.1.141",
+    "category": "插件系统",
+    "changeType": "新增",
+    "descZh": "通过 CLAUDE_CODE_PLUGIN_PREFER_HTTPS 环境变量，可以强制 Claude Code 使用 HTTPS 协议克隆 GitHub 插件源，而不是默认的 SSH。这对于没有配置 GitHub SSH 密钥的环境（如某些 CI/CD 或容器环境）非常有用。",
+    "usageSteps": [
+      "在终端中设置：export CLAUDE_CODE_PLUGIN_PREFER_HTTPS=1",
+      "或在 settings.json 中配置环境变量",
+      "设置后，安装插件时使用 HTTPS URL 克隆：git clone https://github.com/..."
+    ],
+    "tips": [
+      "使用 HTTPS 克隆可能需要配置 GitHub Personal Access Token 用于私有仓库"
+    ],
+    "enKeywords": [
+      "PLUGIN_PREFER_HTTPS",
+      "HTTPS instead of SSH",
+      "clone GitHub plugin",
+      "plugin sources over HTTPS"
+    ]
+  },
+  "workspace-id": {
+    "titleZh": "工作负载身份联合 — Workspace ID",
+    "introducedIn": "2.1.141",
+    "category": "认证与安全",
+    "changeType": "新增",
+    "descZh": "新增 ANTHROPIC_WORKSPACE_ID 环境变量用于工作负载身份联合。当联合规则覆盖多个工作空间时，此变量可以限定发放的 Token 只能访问指定的工作空间，实现更细粒度的权限控制。",
+    "usageSteps": [
+      "设置环境变量：export ANTHROPIC_WORKSPACE_ID=ws_xxxxxxxx",
+      "Claude Code 启动时会使用此 ID 限定 Token 范围",
+      "仅对当前工作空间有访问权限"
+    ],
+    "tips": [
+      "此功能主要用于企业环境中的工作负载身份联合场景"
+    ],
+    "enKeywords": [
+      "ANTHROPIC_WORKSPACE_ID",
+      "workload identity federation",
+      "minted token",
+      "federation rule"
+    ]
+  },
+  "agents-cwd": {
+    "titleZh": "claude agents --cwd 按目录筛选会话",
+    "introducedIn": "2.1.141",
+    "category": "Agent 系统",
+    "changeType": "新增",
+    "descZh": "claude agents 命令新增 --cwd 参数，可以将列出的会话列表限定在指定目录范围内。当你在多个项目中工作时，可以快速查看特定项目的后台 Agent 会话状态。",
+    "usageSteps": [
+      "查看当前目录的 Agent 会话：claude agents --cwd .",
+      "查看指定项目的会话：claude agents --cwd /path/to/project",
+      "结合其他参数：claude agents --cwd . --status running"
+    ],
+    "tips": [
+      "不指定 --cwd 时显示所有目录的会话"
+    ],
+    "enKeywords": [
+      "agents --cwd",
+      "session list to a directory",
+      "scope the session"
+    ]
+  },
+  "subagent-case-insensitive": {
+    "titleZh": "Agent 类型名称大小写不敏感匹配",
+    "introducedIn": "2.1.140",
+    "category": "Agent 系统",
+    "changeType": "优化",
+    "descZh": "Agent 工具的 subagent_type 参数现在支持大小写不敏感和分隔符不敏感的匹配。例如 \"Code Reviewer\"、\"code-reviewer\"、\"code reviewer\" 都会被正确解析为 code-reviewer 类型。这降低了使用 Agent 时的输入难度。",
+    "usageSteps": [
+      "在提示词中指定 Agent 类型：使用 Agent 工具，subagent_type 写 \"Code Reviewer\" 或 \"code reviewer\" 均可",
+      "所有 Agent 类型名都支持此宽松匹配"
+    ],
+    "tips": [
+      "内置 Agent 类型有：general-purpose, explore, plan, code-reviewer, claude-code-guide 等"
+    ],
+    "enKeywords": [
+      "subagent_type",
+      "case- and separator-insensitive",
+      "Code Reviewer resolves",
+      "agent type matching"
+    ]
+  },
+  "goal-command": {
+    "titleZh": "/goal 目标驱动自动执行命令",
+    "introducedIn": "2.1.139",
+    "category": "CLI 命令",
+    "changeType": "新增",
+    "descZh": "/goal 命令允许你设定一个完成条件，Claude Code 将自动跨越多个对话轮次持续工作直到目标达成。支持在交互模式、-p 非交互模式和远程控制中使用。执行过程中会显示实时计时、轮次数和 Token 消耗的覆盖面板，让你随时了解进度。",
+    "usageSteps": [
+      "在交互模式中：输入 /goal \"完成所有的单元测试并确保通过\"",
+      "在非交互模式中：claude -p --goal \"修复所有 lint 错误\"",
+      "执行过程中会显示实时的执行时间、轮次数和 Token 消耗",
+      "目标达成后自动停止，或手动中断"
+    ],
+    "tips": [
+      "设定明确、可验证的目标能获得更好的执行效果",
+      "目标应当是 Claude 可以自主验证完成状态的条件",
+      "配合 Agent View (claude agents) 可以查看目标执行的详细状态"
+    ],
+    "enKeywords": [
+      "/goal command",
+      "completion condition",
+      "keeps working across turns",
+      "elapsed/turns/tokens",
+      "overlay panel"
+    ]
+  },
+  "agent-view": {
+    "titleZh": "Agent View — 会话管理中心",
+    "introducedIn": "2.1.139",
+    "category": "Agent 系统",
+    "changeType": "新增",
+    "descZh": "Agent View 是一个统一的会话管理界面，可以查看所有 Claude Code 会话的状态——正在运行、等待你的输入、或已完成。通过 claude agents 命令即可启动，在一个界面中管理所有后台和前台会话。",
+    "usageSteps": [
+      "启动 Agent View：在终端输入 claude agents",
+      "查看所有会话列表，包括运行中、等待用户、已完成",
+      "支持按目录筛选：claude agents --cwd /path/to/project",
+      "可以恢复之前的会话继续工作"
+    ],
+    "tips": [
+      "这是 Research Preview 功能，可能还会有调整",
+      "适合同时管理多个后台 Agent 任务的场景"
+    ],
+    "enKeywords": [
+      "agent view",
+      "claude agents",
+      "every single Claude Code session",
+      "running, blocked on you, or done"
+    ]
+  },
+  "scroll-speed": {
+    "titleZh": "/scroll-speed 鼠标滚轮速度调节",
+    "introducedIn": "2.1.139",
+    "category": "CLI 命令",
+    "changeType": "新增",
+    "descZh": "/scroll-speed 命令可以调整终端中鼠标滚轮的滚动速度。执行后会实时预览效果，方便找到最舒适的滚动速度。",
+    "usageSteps": [
+      "输入 /scroll-speed 进入速度调节模式",
+      "使用滚轮测试当前速度",
+      "按 +/- 或输入数值调整速度",
+      "实时预览直到满意后确认保存"
+    ],
+    "tips": [
+      "设置保存在本地配置中，下次启动自动生效"
+    ],
+    "enKeywords": [
+      "/scroll-speed",
+      "mouse wheel scroll speed",
+      "scroll speed"
+    ]
+  },
+  "plugin-details-cmd": {
+    "titleZh": "claude plugin details 插件详情命令",
+    "introducedIn": "2.1.139",
+    "category": "插件系统",
+    "changeType": "新增",
+    "descZh": "新增 claude plugin details <name> 命令行命令，可以查看插件的组件清单和项目信息。包括插件提供的技能、Hook、LSP 服务器、主题、监控器等所有组件。",
+    "usageSteps": [
+      "查看插件详情：claude plugin details <plugin-name>",
+      "输出包含该插件的所有组件类型和数量",
+      "可以和 /plugin 面板功能互补使用"
+    ],
+    "tips": [
+      "命令模式下更方便脚本化和自动化查看插件信息"
+    ],
+    "enKeywords": [
+      "claude plugin details",
+      "plugin component inventory",
+      "plugin details <name>"
+    ]
+  },
+  "auto-hard-deny": {
+    "titleZh": "自动模式硬拒绝规则",
+    "introducedIn": "2.1.136",
+    "category": "权限控制",
+    "changeType": "新增",
+    "descZh": "settings.autoMode.hard_deny 配置项允许定义无条件拒绝的分类器规则。与普通规则不同，hard_deny 规则会忽略用户的意图和例外设置，直接阻止操作。用于安全策略的强制执行。",
+    "usageSteps": [
+      "在 settings.json 中配置：{\"autoMode\": {\"hard_deny\": [\"规则模式\"]}}",
+      "hard_deny 规则优先级最高，无法被覆盖",
+      "适合企业管理员强制安全策略"
+    ],
+    "tips": [
+      "hard_deny 规则会覆盖 allow 规则，请谨慎配置"
+    ],
+    "enKeywords": [
+      "autoMode.hard_deny",
+      "hard deny",
+      "block unconditionally",
+      "classifier rules",
+      "auto mode"
+    ]
+  },
+  "session-id-env": {
+    "titleZh": "Bash 子进程会话 ID 环境变量",
+    "introducedIn": "2.1.132",
+    "category": "工具改进",
+    "changeType": "新增",
+    "descZh": "CLAUDE_CODE_SESSION_ID 环境变量现在会自动注入到 Bash 工具的子进程环境中。这意味着在 Claude Code 的 Bash 会话中运行的脚本和命令可以感知到当前的会话 ID，方便日志记录和追踪。",
+    "usageSteps": [
+      "在 Bash 命令中直接读取：echo $CLAUDE_CODE_SESSION_ID",
+      "在脚本中用于日志标记：echo \"[$CLAUDE_CODE_SESSION_ID] 执行任务...\"",
+      "与 Hook 系统的 session_id 字段值一致"
+    ],
+    "tips": [
+      "适合需要在子进程中关联 Claude Code 会话的场景，如自定义日志系统"
+    ],
+    "enKeywords": [
+      "CLAUDE_CODE_SESSION_ID",
+      "session_id",
+      "Bash tool subprocess environment",
+      "matching the session_id"
+    ]
+  },
+  "disable-alternate-screen": {
+    "titleZh": "禁用全屏交替缓冲区",
+    "introducedIn": "2.1.132",
+    "category": "终端体验",
+    "changeType": "新增",
+    "descZh": "通过 CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN=1 环境变量可以禁用 Claude Code 的全屏交替屏幕渲染，让对话内容保留在终端的原生滚动历史中。这样可以在退出 Claude Code 后仍然看到完整的对话记录。",
+    "usageSteps": [
+      "设置环境变量：export CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN=1",
+      "或在 settings.json 中配置",
+      "设置后 Claude Code 不再切换到全屏模式",
+      "对话内容保留在终端原生滚动缓冲区中"
+    ],
+    "tips": [
+      "适合需要频繁查看历史输出的场景",
+      "某些终端模拟器的交替屏幕行为不同，此设置可以统一体验"
+    ],
+    "enKeywords": [
+      "DISABLE_ALTERNATE_SCREEN",
+      "alternate-screen",
+      "fullscreen alternate-screen",
+      "native scrollback",
+      "opt out of the fullscreen"
+    ]
+  },
+  "plugin-url-flag": {
+    "titleZh": "--plugin-url 从 URL 加载插件",
+    "introducedIn": "2.1.129",
+    "category": "插件系统",
+    "changeType": "新增",
+    "descZh": "--plugin-url 参数允许从指定 URL 下载插件 .zip 压缩包并在当前会话中使用。这种方式无需预先安装插件，适合临时试用或 CI/CD 环境中的按需加载。",
+    "usageSteps": [
+      "从 URL 加载插件：claude --plugin-url https://example.com/plugin.zip",
+      "插件仅在当前会话中有效",
+      "支持 HTTPS 远程下载，自动解压并加载"
+    ],
+    "tips": [
+      "适合一次性使用或测试插件的场景",
+      "URL 必须指向有效的 .zip 压缩包"
+    ],
+    "enKeywords": [
+      "--plugin-url",
+      "plugin .zip archive from a URL",
+      "fetch a plugin .zip",
+      "plugin-url <url>"
+    ]
+  },
+  "force-sync-output": {
+    "titleZh": "强制同步输出模式",
+    "introducedIn": "2.1.129",
+    "category": "终端体验",
+    "changeType": "新增",
+    "descZh": "CLAUDE_CODE_FORCE_SYNC_OUTPUT=1 环境变量可以强制启用同步输出模式。某些终端（如 Emacs eat）的自动检测可能会失败，通过此变量可以手动启用，确保输出渲染正确。",
+    "usageSteps": [
+      "设置环境变量：export CLAUDE_CODE_FORCE_SYNC_OUTPUT=1",
+      "适合 Emacs eat、特殊终端模拟器等场景"
+    ],
+    "tips": [
+      "只有在确认自动检测失败时才需要设置此变量"
+    ],
+    "enKeywords": [
+      "FORCE_SYNC_OUTPUT",
+      "synchronized output",
+      "force-enable synchronized",
+      "Emacs eat"
+    ]
+  },
+  "package-auto-update": {
+    "titleZh": "包管理器自动更新",
+    "introducedIn": "2.1.129",
+    "category": "安装与更新",
+    "changeType": "新增",
+    "descZh": "CLAUDE_CODE_PACKAGE_MANAGER_AUTO_UPDATE 环境变量启用后，Claude Code 会在后台自动运行包管理器的升级命令（如 brew upgrade 或 winget upgrade），并在发现有新版本时提示你重启以应用更新。",
+    "usageSteps": [
+      "启用自动更新：export CLAUDE_CODE_PACKAGE_MANAGER_AUTO_UPDATE=1",
+      "Claude Code 在后台定期检查更新",
+      "发现新版本后提示重启"
+    ],
+    "tips": [
+      "目前支持 Homebrew 和 WinGet 安装方式的自动更新"
+    ],
+    "enKeywords": [
+      "PACKAGE_MANAGER_AUTO_UPDATE",
+      "Homebrew or WinGet",
+      "runs the upgrade command",
+      "prompts to restart"
+    ]
+  },
+  "color-random": {
+    "titleZh": "/color 随机颜色主题",
+    "introducedIn": "2.1.128",
+    "category": "CLI 命令",
+    "changeType": "新增",
+    "descZh": "/color 命令现在支持无参数调用，直接随机选取一个会话颜色主题，让你快速切换 Claude Code 的外观风格。",
+    "usageSteps": [
+      "输入 /color 不带参数即可随机切换颜色",
+      "如果想指定颜色：/color <颜色名>"
+    ],
+    "tips": [
+      "随机颜色是快速换肤的好方法，不满意可以再按一次"
+    ],
+    "enKeywords": [
+      "/color",
+      "random session color",
+      "no args picks a random"
+    ]
+  },
+  "mcp-tool-count": {
+    "titleZh": "/mcp 面板显示工具数量",
+    "introducedIn": "2.1.128",
+    "category": "MCP 集成",
+    "changeType": "优化",
+    "descZh": "/mcp 面板现在会显示每个已连接 MCP 服务器的工具数量，并标记工具数为 0 的服务器。这有助于快速诊断 MCP 服务器的配置是否正确。",
+    "usageSteps": [
+      "输入 /mcp 打开 MCP 管理面板",
+      "每个服务器旁显示工具数量，例如 \"12 tools\"",
+      "工具数为 0 的服务器会有警告标记"
+    ],
+    "tips": [
+      "如果预期有工具的服务器显示 0，检查 MCP 服务器是否正常运行"
+    ],
+    "enKeywords": [
+      "/mcp",
+      "tool count",
+      "shows the tool count",
+      "0 tools"
+    ]
+  },
+  "plugin-dir-zip": {
+    "titleZh": "--plugin-dir 支持 .zip 插件包",
+    "introducedIn": "2.1.128",
+    "category": "插件系统",
+    "changeType": "新增",
+    "descZh": "--plugin-dir 参数现在不仅支持目录路径，还支持直接指定 .zip 压缩包作为插件源。这简化了插件分发和测试的流程。",
+    "usageSteps": [
+      "加载目录插件：claude --plugin-dir /path/to/plugin-folder",
+      "加载 zip 插件：claude --plugin-dir /path/to/plugin.zip",
+      "可以多次指定加载多个插件"
+    ],
+    "tips": [
+      ".zip 文件需要包含完整的插件结构（manifest.json 等）"
+    ],
+    "enKeywords": [
+      "--plugin-dir",
+      ".zip plugin archives",
+      ".zip archives in addition to directories"
+    ]
+  },
+  "channels-api-key": {
+    "titleZh": "--channels 支持 API Key 认证",
+    "introducedIn": "2.1.128",
+    "category": "认证与安全",
+    "changeType": "新增",
+    "descZh": "--channels 参数现在可以与 Console (API Key) 认证方式配合使用。使用 Console 组织的用户需要管理员在设置中启用 channelsEnabled: true 才能使用此功能。",
+    "usageSteps": [
+      "管理员启用：在管理设置中设置 channelsEnabled: true",
+      "用户使用：claude --channels <channel-name>",
+      "使用 API Key 认证时即可加入指定频道"
+    ],
+    "tips": [
+      "使用前需要管理员先在组织设置中开启频道功能"
+    ],
+    "enKeywords": [
+      "--channels",
+      "console (API key) authentication",
+      "channelsEnabled",
+      "channels"
+    ]
+  },
+  "otel-isolation": {
+    "titleZh": "子进程 OTEL 环境变量隔离",
+    "introducedIn": "2.1.128",
+    "category": "工具改进",
+    "changeType": "优化",
+    "descZh": "Bash、Hook、MCP 和 LSP 等子进程不再继承 OTEL_* 环境变量。避免 OpenTelemetry 追踪配置干扰子进程的正常运行，同时保护遥测数据的安全性。",
+    "usageSteps": [
+      "无需额外配置，自动生效",
+      "子进程环境自动过滤 OTEL_* 前缀的所有变量"
+    ],
+    "tips": [
+      "如果你的子进程需要 OTEL 配置，需要手动在命令中设置"
+    ],
+    "enKeywords": [
+      "OTEL_*",
+      "no longer inherit OTEL",
+      "Subprocesses",
+      "Bash, hooks, MCP, LSP",
+      "OTEL_"
+    ]
+  },
+  "project-purge": {
+    "titleZh": "claude project purge 项目数据清理",
+    "introducedIn": "2.1.126",
+    "category": "CLI 命令",
+    "changeType": "新增",
+    "descZh": "claude project purge 命令可以彻底清理指定项目的所有 Claude Code 状态数据，包括对话记录、任务列表、文件历史和配置条目。支持演练模式、确认模式和交互模式，防止误删。",
+    "usageSteps": [
+      "清理当前项目：claude project purge",
+      "清理指定路径：claude project purge /path/to/project",
+      "演练模式（仅预览不删除）：claude project purge --dry-run",
+      "跳过确认：claude project purge -y",
+      "交互选择：claude project purge -i",
+      "清理所有项目：claude project purge --all"
+    ],
+    "tips": [
+      "建议先用 --dry-run 查看哪些数据会被清理",
+      "清理后无法恢复，重要项目建议先备份"
+    ],
+    "enKeywords": [
+      "claude project purge",
+      "delete all Claude Code state",
+      "transcripts, tasks, file history",
+      "--dry-run",
+      "purge [path]"
+    ]
+  },
+  "model-picker-gateway": {
+    "titleZh": "自定义网关模型选择器",
+    "introducedIn": "2.1.126",
+    "category": "模型与性能",
+    "changeType": "新增",
+    "descZh": "当 ANTHROPIC_BASE_URL 指向 Anthropic 兼容的网关时，/model 选择器会自动从网关的 /v1/models 端点获取可用模型列表，而不是仅显示默认模型。这让你可以在自定义网关环境中自由切换模型。",
+    "usageSteps": [
+      "设置网关地址：export ANTHROPIC_BASE_URL=https://my-gateway.example.com",
+      "进入 /model 选择器查看网关提供的所有模型",
+      "选择目标模型即可切换"
+    ],
+    "tips": [
+      "网关必须是 Anthropic API 兼容的接口",
+      "模型列表由网关 /v1/models 端点返回"
+    ],
+    "enKeywords": [
+      "/model picker",
+      "gateway",
+      "/v1/models endpoint",
+      "ANTHROPIC_BASE_URL",
+      "Anthropic-compatible gateway"
+    ]
+  },
+  "safety-net-expanded": {
+    "titleZh": "安全网络覆盖范围扩展",
+    "introducedIn": "2.1.126",
+    "category": "权限控制",
+    "changeType": "优化",
+    "descZh": "--dangerously-skip-permissions 选项现在会绕过更多受保护路径的写入提示，包括 .claude/、.git/、.vscode/、Shell 配置文件等。但灾难性的删除命令（如 rm -rf /）仍然会保留安全确认提示。",
+    "usageSteps": [
+      "使用 --dangerously-skip-permissions 启动",
+      "在沙箱或无网络环境中使用更安全"
+    ],
+    "tips": [
+      "仅在完全受信任的沙箱环境中使用此选项",
+      "常规开发中不建议使用，保留权限检查更安全"
+    ],
+    "enKeywords": [
+      "dangerously-skip-permissions",
+      "bypasses prompts for writes",
+      "protected paths",
+      ".claude/, .git/, .vscode/",
+      "catastrophic removal"
+    ]
+  },
+  "worktree-base-ref": {
+    "titleZh": "工作树基准分支配置",
+    "introducedIn": "2.1.133",
+    "category": "工作树",
+    "changeType": "新增",
+    "descZh": "worktree.baseRef 设置项可以控制 --worktree、EnterWorktree 和 Agent 隔离工作树的分支基准点。可选值为 'fresh'（从 origin 的默认分支创建）和 'head'（从本地 HEAD 创建）。这样可以灵活控制新工作树是否携带本地未推送的提交。",
+    "usageSteps": [
+      "从默认分支创建（最新代码）：worktree.baseRef: \"fresh\"",
+      "从本地 HEAD 创建（保留未推送提交）：worktree.baseRef: \"head\"",
+      "在 settings.json 或 CLAUDE.md 中配置"
+    ],
+    "tips": [
+      "fresh 模式确保工作树基于最新官方代码",
+      "head 模式保留你的未推送修改，适合实验性开发"
+    ],
+    "enKeywords": [
+      "worktree.baseRef",
+      "fresh | head",
+      "branch from",
+      "EnterWorktree base",
+      "origin/<default> or local HEAD"
+    ]
+  },
+  "sandbox-paths": {
+    "titleZh": "Linux Sandbox 自定义路径配置",
+    "introducedIn": "2.1.133",
+    "category": "安全沙箱",
+    "changeType": "新增",
+    "descZh": "新增 sandbox.bwrapPath 和 sandbox.socatPath 托管设置项，允许 Linux/WSL 用户在非标准安装路径下指定 bubblewrap 和 socat 二进制文件的位置。",
+    "usageSteps": [
+      "在 settings.json 中配置：{\"sandbox\": {\"bwrapPath\": \"/usr/local/bin/bwrap\", \"socatPath\": \"/opt/bin/socat\"}}",
+      "仅 Linux/WSL 环境可用"
+    ],
+    "tips": [
+      "仅在 bubblewrap 或 socat 安装在非标准路径时需要配置"
+    ],
+    "enKeywords": [
+      "bwrapPath",
+      "socatPath",
+      "bubblewrap and socat",
+      "sandbox.bwrapPath",
+      "custom bubblewrap"
+    ]
+  },
+  "parent-settings-behavior": {
+    "titleZh": "父级设置继承行为控制",
+    "introducedIn": "2.1.133",
+    "category": "配置管理",
+    "changeType": "新增",
+    "descZh": "parentSettingsBehavior 是一个管理员级别的配置键，控制子组织或项目如何继承父级的设置。第一个支持的值为 'first-wins'（子级设置优先）。",
+    "usageSteps": [
+      "管理员在组织级别配置 parentSettingsBehavior",
+      "first-wins：子级的设置优先于父级的同名设置"
+    ],
+    "tips": [
+      "这是管理员配置，普通用户无法修改"
+    ],
+    "enKeywords": [
+      "parentSettingsBehavior",
+      "admin-tier key",
+      "first-wins",
+      "parent settings"
+    ]
+  },
+  "paste-hint": {
+    "titleZh": "Ctrl+V 粘贴图片进度提示",
+    "introducedIn": "2.1.132",
+    "category": "终端体验",
+    "changeType": "新增",
+    "descZh": "当使用 Ctrl+V 粘贴图片到 Claude Code 时，底部会显示\"Pasting…\"提示，让你知道系统正在读取剪贴板中的图片数据，而不是以为卡住了。",
+    "usageSteps": [
+      "Ctrl+V 粘贴图片",
+      "等待 \"Pasting…\" 提示消失即完成"
+    ],
+    "tips": [
+      "大图片可能需要更长时间读取，耐心等待即可"
+    ],
+    "enKeywords": [
+      "Pasting…",
+      "Ctrl+V image paste",
+      "footer hint",
+      "being read from the clipboard"
+    ]
+  },
+  "sigint-graceful": {
+    "titleZh": "外部 SIGINT 优雅退出",
+    "introducedIn": "2.1.132",
+    "category": "稳定性",
+    "changeType": "修复",
+    "descZh": "修复了外部 SIGINT 信号（如 IDE 停止按钮、kill -INT）不会触发优雅退出的问题。现在收到 SIGINT 后会正确恢复终端模式并打印 --resume 恢复提示，而不是直接中断。",
+    "usageSteps": [
+      "被中断后终端模式自动恢复正常",
+      "会打印 --resume 提示方便恢复会话"
+    ],
+    "tips": [
+      "使用 claude --resume 可以继续被中断的会话"
+    ],
+    "enKeywords": [
+      "SIGINT",
+      "graceful shutdown",
+      "terminal modes are now restored",
+      "--resume hint",
+      "kill -INT"
+    ]
+  },
+  "feedback-command": {
+    "titleZh": "/feedback 命令增强 — 自动附带上下文数据",
+    "introducedIn": "2.1.141",
+    "category": "CLI 命令",
+    "changeType": "优化",
+    "descZh": "/feedback 命令现在会自动包含更多的会话上下文数据，帮助 Anthropic 团队更好地理解和处理你的反馈。提交的反馈会更完整地反映实际使用场景。",
+    "usageSteps": [
+      "输入 /feedback 打开反馈界面",
+      "填写反馈描述",
+      "系统自动附带相关会话数据",
+      "提交后团队可更快定位问题"
+    ],
+    "tips": [
+      "详细的描述和复现步骤能帮助更快解决问题"
+    ],
+    "enKeywords": [
+      "/feedback",
+      "session context data",
+      "feedback",
+      "Anthropic team"
+    ]
+  },
+  "mcp-persist-after-clear": {
+    "titleZh": "MCP 服务器在 /clear 后保持连接",
+    "introducedIn": "2.1.136",
+    "category": "MCP 集成",
+    "changeType": "修复",
+    "descZh": "修复了执行 /clear 后 MCP 服务器会静默消失的问题。现在通过 .mcp.json、插件和 claude.ai 连接器配置的所有 MCP 服务器在清屏后都会被正确保留。",
+    "usageSteps": [
+      "配置 MCP 服务器：在 .mcp.json 中添加服务器定义",
+      "执行 /clear 清空对话历史",
+      "输入 /mcp 查看服务器列表，所有服务器连接仍然存在"
+    ],
+    "tips": [
+      "如果 /clear 后 MCP 服务器仍然丢失，请检查 .mcp.json 格式是否正确"
+    ],
+    "enKeywords": [
+      "MCP servers configured",
+      "/clear",
+      ".mcp.json",
+      "claude.ai connectors",
+      "silently disappearing"
+    ]
+  },
+  "plan-mode-file-write": {
+    "titleZh": "Plan Mode 文件写入权限修复",
+    "introducedIn": "2.1.136",
+    "category": "权限控制",
+    "changeType": "修复",
+    "descZh": "修复了 Plan Mode 中即使有匹配的 Edit 允许规则也会阻止文件写入的问题。现在允许规则在 Plan Mode 下也能正常生效。",
+    "usageSteps": [
+      "在 settings.json 中为 Edit 工具配置 allow 规则",
+      "进入 Plan Mode：使用 /plan 命令",
+      "执行被允许规则匹配的 Edit 操作，不会被额外拦截"
+    ],
+    "tips": [
+      "确保 allow 规则的路径模式与实际编辑的文件路径精确匹配"
+    ],
+    "enKeywords": [
+      "plan mode",
+      "file writes",
+      "Edit",
+      "allow rule",
+      "blocking file writes"
+    ]
+  },
+  "at-file-picker-fix": {
+    "titleZh": "@ 文件选择器大目录和增量文件支持",
+    "introducedIn": "2.1.136",
+    "category": "终端体验",
+    "changeType": "修复",
+    "descZh": "修复了 @ 文件选择器在目录超过 100 个条目时找不到文件的问题，同时修复了在小型非 git 目录中无法匹配会话期间新创建文件的问题。",
+    "usageSteps": [
+      "输入 @ 符号触发文件选择器",
+      "输入文件名关键词进行模糊匹配",
+      "现在无论目录大小都能正确找到文件"
+    ],
+    "tips": [
+      "如果文件不在允许访问的目录中，@ 选择器不会显示"
+    ],
+    "enKeywords": [
+      "@ file picker",
+      "more than 100 entries",
+      "files created mid-session",
+      "non-git directories"
+    ]
+  },
+  "keybinding-backspace": {
+    "titleZh": "Backspace 键位映射修复",
+    "introducedIn": "2.1.136",
+    "category": "终端体验",
+    "changeType": "修复",
+    "descZh": "修复了在使用 Ctrl+G 打开外部编辑器后 Backspace 和 Ctrl+Backspace 键功能互换的问题。退出外部编辑器后键盘映射正常恢复。",
+    "usageSteps": [
+      "使用 Ctrl+G 打开外部编辑器编辑提示词",
+      "关闭编辑器返回 Claude Code",
+      "Backspace 和 Ctrl+Backspace 行为恢复正常"
+    ],
+    "tips": [
+      "如果仍然有键盘映射问题，可以尝试 Ctrl+L 刷新终端显示"
+    ],
+    "enKeywords": [
+      "Backspace",
+      "Ctrl+Backspace",
+      "external editor",
+      "Ctrl+G",
+      "swapped"
+    ]
+  },
+  "agent-color-palette": {
+    "titleZh": "Agent 配色方案更新",
+    "introducedIn": "2.1.140",
+    "category": "Agent 系统",
+    "changeType": "优化",
+    "descZh": "更新了 Agent 的颜色调色板，使不同 Agent 类型在界面中的视觉区分更加明显，提升多 Agent 协作场景下的识别效率。",
+    "usageSteps": [
+      "配色方案自动生效，无需配置",
+      "不同 Agent 类型显示不同的视觉颜色"
+    ],
+    "tips": [
+      "颜色方案由系统自动管理，不可手动自定义"
+    ],
+    "enKeywords": [
+      "agent color palette",
+      "Updated agent color"
+    ]
+  },
+  "settings-hotreload-symlink": {
+    "titleZh": "符号链接配置文件热重载修复",
+    "introducedIn": "2.1.140",
+    "category": "配置管理",
+    "changeType": "修复",
+    "descZh": "修复了使用符号链接指向的 settings.json 文件在热重载时触发错误变更事件和多余 ConfigChange Hook 的问题。",
+    "usageSteps": [
+      "使用 ln -s 创建配置文件的符号链接",
+      "修改源文件后 Claude Code 正确检测变更并重载"
+    ],
+    "tips": [
+      "避免复杂的嵌套符号链接，直接使用配置文件路径最为稳定"
+    ],
+    "enKeywords": [
+      "settings hot-reload",
+      "symlinked settings",
+      "change events",
+      "ConfigChange",
+      "spurious"
+    ]
+  },
+  "manage-settings-retry": {
+    "titleZh": "托管设置 401 自动重试",
+    "introducedIn": "2.1.140",
+    "category": "配置管理",
+    "changeType": "修复",
+    "descZh": "修复了远程托管设置在遇到 401 认证错误时不重试的问题。现在会自动使用强制刷新的 Token 重试一次，提升企业环境的配置同步可靠性。",
+    "usageSteps": [
+      "企业管理员配置托管设置后自动生效",
+      "Token 过期时自动刷新并重试一次",
+      "用户无需手动干预"
+    ],
+    "tips": [
+      "如果持续出现 401 错误，请检查 API Key 或 OAuth 配置"
+    ],
+    "enKeywords": [
+      "remote managed settings",
+      "retrying on 401",
+      "force-refreshed token",
+      "managed settings"
+    ]
+  },
+  "read-offset-validation": {
+    "titleZh": "Read 工具 offset 参数容错",
+    "introducedIn": "2.1.140",
+    "category": "工具改进",
+    "changeType": "修复",
+    "descZh": "修复了 Read 工具的 offset 参数传入带空格或 + 前缀的字符串值时验证失败的问题。现在能正确处理各种格式的 offset 输入。",
+    "usageSteps": [
+      "Read 工具调用时 offset 参数支持纯数字、带空格、带+号的格式",
+      "例如 offset: \" 100\" 或 offset: \"+200\" 都能正确解析"
+    ],
+    "tips": [
+      "推荐使用纯数字格式作为最佳实践，但工具现在能容错处理"
+    ],
+    "enKeywords": [
+      "Read tool",
+      "offset",
+      "whitespace-padded",
+      "+-prefixed",
+      "validation"
+    ]
+  },
+  "loop-wakeup-fix": {
+    "titleZh": "/loop 冗余唤醒优化",
+    "introducedIn": "2.1.140",
+    "category": "CLI 命令",
+    "changeType": "修复",
+    "descZh": "修复了 /loop 在后台任务已通知完成时仍然触发多余唤醒的问题。现在 /loop 只在实际需要时启动新轮次。",
+    "usageSteps": [
+      "使用 /loop 启动自动循环任务",
+      "设置明确的完成条件",
+      "任务完成后自动停止，不再产生空轮次"
+    ],
+    "tips": [
+      "配合 /goal 命令使用可以设置更精确的完成判断条件"
+    ],
+    "enKeywords": [
+      "/loop",
+      "redundant wakeups",
+      "background tasks",
+      "notify on completion"
+    ]
+  },
+  "config-persistence": {
+    "titleZh": "/config 设置自动持久化",
+    "introducedIn": "2.1.119",
+    "category": "配置管理",
+    "changeType": "优化",
+    "descZh": "/config 命令修改的设置（主题、编辑器模式、详细模式等）现在自动保存到 ~/.claude/settings.json 文件中。不再需要手动编辑配置文件来保留设置。",
+    "usageSteps": [
+      "输入 /config 打开设置面板",
+      "选择要修改的设置项（如 theme、editorMode 等）",
+      "修改后自动保存到 settings.json",
+      "下次启动时自动应用之前的设置"
+    ],
+    "tips": [
+      "可以通过 /config 查看所有可配置项及其当前值"
+    ],
+    "enKeywords": [
+      "/config settings",
+      "persist",
+      "settings.json",
+      "theme, editor mode"
+    ]
+  },
+  "pr-url-template": {
+    "titleZh": "自定义 PR 链接模板",
+    "introducedIn": "2.1.119",
+    "category": "配置管理",
+    "changeType": "新增",
+    "descZh": "新增 prUrlTemplate 设置，支持将页面底部的 PR 徽章链接指向自定义代码审查地址。适用于使用 GitLab、Bitbucket 或私有 GitHub Enterprise 实例的团队。",
+    "usageSteps": [
+      "在 settings.json 中配置：{\"prUrlTemplate\": \"https://gitlab.com/{owner}/{repo}/-/merge_requests/{pr}\"}",
+      "支持 {owner}、{repo}、{pr} 三个占位符",
+      "配置后状态栏 PR 链接自动指向指定平台"
+    ],
+    "tips": [
+      "确保 URL 模板中的占位符拼写正确，区分大小写"
+    ],
+    "enKeywords": [
+      "prUrlTemplate",
+      "PR badge",
+      "custom code-review URL",
+      "footer"
+    ]
+  },
+  "hide-cwd": {
+    "titleZh": "隐藏工作目录路径显示",
+    "introducedIn": "2.1.119",
+    "category": "配置管理",
+    "changeType": "新增",
+    "descZh": "通过 CLAUDE_CODE_HIDE_CWD 环境变量可以隐藏启动画面中的当前工作目录路径。适合截图分享、录制演示或保护隐私的场景。",
+    "usageSteps": [
+      "设置环境变量：export CLAUDE_CODE_HIDE_CWD=1",
+      "或在 settings.json 中配置 env 字段",
+      "启动 Claude Code 时不再显示工作目录路径"
+    ],
+    "tips": [
+      "适合录制教程视频或公开分享终端截图时使用"
+    ],
+    "enKeywords": [
+      "CLAUDE_CODE_HIDE_CWD",
+      "hide the working directory",
+      "startup logo"
+    ]
+  },
+  "from-pr-multi": {
+    "titleZh": "--from-pr 多平台代码托管支持",
+    "introducedIn": "2.1.119",
+    "category": "CLI 命令",
+    "changeType": "新增",
+    "descZh": "--from-pr 参数现在支持 GitHub、GitLab 合并请求、Bitbucket 拉取请求和 GitHub Enterprise PR URL。不再局限于 github.com。",
+    "usageSteps": [
+      "GitHub: claude --from-pr https://github.com/owner/repo/pull/123",
+      "GitLab: claude --from-pr https://gitlab.com/owner/repo/-/merge_requests/123",
+      "Bitbucket: claude --from-pr https://bitbucket.org/owner/repo/pull-requests/123",
+      "企业版: claude --from-pr https://git.company.com/owner/repo/pull/123"
+    ],
+    "tips": [
+      "需要有效的认证凭据才能访问私有仓库"
+    ],
+    "enKeywords": [
+      "--from-pr",
+      "GitLab merge-request",
+      "Bitbucket pull-request",
+      "GitHub Enterprise"
+    ]
+  },
+  "hook-duration": {
+    "titleZh": "Hook 工具执行耗时统计",
+    "introducedIn": "2.1.119",
+    "category": "Hook 系统",
+    "changeType": "新增",
+    "descZh": "PostToolUse 和 PostToolUseFailure Hook 的输入数据中新增 duration_ms 字段，记录工具实际执行耗时（不包含用户权限确认等待时间）。便于监控性能瓶颈。",
+    "usageSteps": [
+      "在 Hook 脚本中读取 JSON 输入的 duration_ms 字段",
+      "分析各工具调用的耗时分布",
+      "针对慢工具进行优化或添加缓存策略"
+    ],
+    "tips": [
+      "duration_ms 不包含人工确认时间，仅计算工具自身运行时长"
+    ],
+    "enKeywords": [
+      "PostToolUse",
+      "duration_ms",
+      "tool execution time",
+      "Hook inputs"
+    ]
+  },
+  "vim-esc-behavior": {
+    "titleZh": "Vim 模式 Esc 键行为优化",
+    "introducedIn": "2.1.119",
+    "category": "终端体验",
+    "changeType": "修复",
+    "descZh": "修复了 Vim 模式 INSERT 状态下按 Esc 会拉回之前排队消息的问题。现在按 Esc 仅退出 INSERT 模式；连续按两次 Esc 才能中断当前操作。",
+    "usageSteps": [
+      "通过 /config 启用 Vim 模式",
+      "在 INSERT 模式下编辑文本",
+      "按一次 Esc → 退出 INSERT 回到 NORMAL 模式",
+      "再按一次 Esc → 中断当前 AI 输出"
+    ],
+    "tips": [
+      "Vim 模式下 ESC 的双重功能：切换模式 + 中断输出"
+    ],
+    "enKeywords": [
+      "Vim mode",
+      "Esc in INSERT",
+      "queued message",
+      "press Esc again"
+    ]
+  },
+  "slash-highlight": {
+    "titleZh": "斜杠命令匹配字符高亮",
+    "introducedIn": "2.1.119",
+    "category": "终端体验",
+    "changeType": "优化",
+    "descZh": "斜杠命令建议列表现在会高亮显示与你输入查询匹配的字符，让命令搜索的匹配逻辑一目了然。同时长描述文本现在换行显示而不是截断。",
+    "usageSteps": [
+      "输入 / 后跟部分命令名",
+      "查看匹配的命令列表",
+      "匹配的字符部分会高亮显示",
+      "长描述自动换行完整显示"
+    ],
+    "tips": [
+      "输入更多字符可以缩小匹配范围，高亮帮助你确认匹配逻辑"
+    ],
+    "enKeywords": [
+      "Slash command suggestions",
+      "highlight",
+      "matched your query",
+      "wraps long descriptions"
+    ]
+  }
+}
