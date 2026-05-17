@@ -826,15 +826,15 @@ function majorVer(version) {
 /** 生成完整 HTML */
 function generateHTML(data) {
   const { versions, kb, fromCache } = data;
+  // 获取有 rawItems 的版本（过滤掉没有发布说明的旧版本）
   const versionList = Object.entries(versions)
+    .filter(([, info]) => info.rawItems && info.rawItems.length > 0)
     .sort(([, a], [, b]) => (b.date || '').localeCompare(a.date || ''));
 
   const latestVersion = versionList[0]?.[0] || '?';
   const latestDate = versionList[0]?.[1]?.date || '?';
   const today = new Date().toISOString().slice(0, 10);
 
-  // 获取主要版本号列表
-  const majors = [...new Set(versionList.map(([v]) => majorVer(v)))];
 
   // 功能知识库条目列表（用于搜索提示）
   const kbItems = Object.entries(kb || {}).map(([id, d]) => ({
@@ -845,6 +845,9 @@ function generateHTML(data) {
   const totalVersions = versionList.length;
   const firstVersion = versionList[versionList.length - 1];
   const firstDate = firstVersion?.[1]?.date || '?';
+
+  // 获取主要版本号列表
+  const majors = [...new Set(versionList.map(([v]) => majorVer(v)))];
 
   // 生成版本卡片
   const versionCards = versionList.map(([ver, info], idx) => {
@@ -904,26 +907,20 @@ function generateHTML(data) {
     }
 
     return `
-    <div class="version-card ${isLatest ? 'version-latest' : ''}"
-         data-version="${esc(ver)}"
-         data-major="${major}"
-         data-date="${date}"
-         data-content="${esc((info.rawItems || []).map(r => r.text).join(' ') + ' ' + ver)}">
-      <div class="version-header" onclick="this.closest('.version-card').classList.toggle('expanded')">
+    <details class="version-card ${isLatest ? 'version-latest' : ''}" data-version="${esc(ver)}" data-major="${major}" data-date="${date}" data-content="${esc((info.rawItems || []).map(r => r.text).join(' ') + ' ' + ver)}">
+      <summary class="version-header">
         <div class="version-info">
           <span class="version-number">v${esc(ver)}</span>
           ${isLatest ? '<span class="version-latest-tag">🆕 最新</span>' : ''}
           <span class="version-date">📅 ${date}</span>
           <span class="version-major-tag">${major}</span>
         </div>
-        <button class="expand-btn" onclick="this.closest('.version-card').classList.toggle('expanded')">
-          展开详情 ▼
-        </button>
-      </div>
+        <span class="expand-btn">展开详情 ▼</span>
+      </summary>
       <div class="version-body">
         ${zhHTML}
       </div>
-    </div>`;
+    </details>`;
   }).join('\n');
 
   // HTML 模板
@@ -1103,10 +1100,8 @@ function generateHTML(data) {
     overflow: hidden;
   }
   .version-card:hover { box-shadow: var(--shadow-lg); }
-  .version-card.version-latest {
-    border-color: var(--accent);
-    border-width: 2px;
-  }
+  .version-card[open] { border-color: var(--accent); border-width: 2px; }
+  .version-card.version-latest { border-color: var(--accent); border-width: 2px; }
 
   .version-header {
     display: flex;
@@ -1115,7 +1110,9 @@ function generateHTML(data) {
     padding: 16px 20px;
     cursor: pointer;
     user-select: none;
+    list-style: none;
   }
+  .version-header::-webkit-details-marker { display: none; }
   .version-info {
     display: flex;
     align-items: center;
@@ -1162,12 +1159,9 @@ function generateHTML(data) {
 
   /* 版本内容 */
   .version-body {
-    display: none;
     padding: 0 20px 20px;
     border-top: 1px solid var(--border);
   }
-  .version-card.expanded .version-body { display: block; }
-  .version-card.expanded .expand-btn { display: none; }
 
   /* ====== 分类组 ====== */
   .category-group {
@@ -1451,16 +1445,16 @@ ${fromCache ? '<span class="cache-note">⚠️ 离线模式 — 使用缓存数�
       const matchFilter = currentFilter === 'all' || major === currentFilter;
       const matchSearch = !query || version.includes(query) || content.includes(query);
 
-      card.style.display = (matchFilter && matchSearch) ? '' : 'none';
+      card.toggleAttribute('hidden', !(matchFilter && matchSearch));
     });
 
     // 更新计数
-    const visible = [...cards].filter(c => c.style.display !== 'none').length;
+    const visible = [...cards].filter(c => !c.hidden).length;
     document.querySelector('.filter-btn.active .filter-count').textContent = visible;
   }
 
   // 默认展开最新版本
-  document.querySelector('.version-latest')?.classList.add('expanded');
+  document.querySelector('.version-card')?.setAttribute('open', '');
 </script>
 </body>
 </html>`;
