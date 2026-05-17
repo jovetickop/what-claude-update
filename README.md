@@ -20,7 +20,7 @@
 | 📦 **Incremental Sync** | Cached versions are kept forever; only new versions are fetched each run |
 | 🌐 **Bilingual UI** | Toggle between Chinese (with original usage guides) and English (raw release notes) |
 | 🃏 **Feature Cards** | Each feature gets a dedicated card, grouped by category (Plugins, Agent, CLI, Worktree...) |
-| 💡 **Usage Examples** | Every feature includes copy-paste terminal commands |
+| 💡 **Usage Examples** | Each of 2100+ features includes AI-generated usage steps and practical tips |
 | 🔍 **Smart Search** | Real-time filtering by version number or feature name; filter by major version |
 | 🎨 **Dark Mode** | Auto-follows system light/dark theme |
 | ⚡ **Zero Dependencies** | Uses only Node.js built-in modules — no `npm install` needed |
@@ -52,11 +52,13 @@ First run takes ~15 seconds (fetches 409 versions + 112 release notes). Subseque
 
 ```
 what-claude-update/
-├── update.bat              # Entry point (double-click)
+├── update.bat              # Entry point (double-click) — fetch versions + generate HTML
+├── enrich-kb.bat           # AI-powered knowledge base enricher (double-click)
+├── enrich-kb.js            # Calls local Claude CLI to generate real usage guides
 ├── generate.js             # Core script
 ├── claude-versions.html    # ← Generated output (open in browser)
 ├── data/
-│   ├── kb.json             # Knowledge base (Chinese guides + examples)
+│   ├── kb.json             # Knowledge base (2100+ features with Chinese guides)
 │   └── versions-cache.json # Version cache (incremental update base)
 └── README.md
 ```
@@ -67,7 +69,7 @@ what-claude-update/
 |--------|-----------------|---------|
 | [npm registry](https://www.npmjs.com/package/@anthropic-ai/claude-code) | 409 version numbers + release dates | Every run |
 | [GitHub Releases](https://github.com/anthropics/claude-code/releases) | Detailed changelogs for 112 versions | When new versions detected |
-| Local `kb.json` | 53+ curated feature descriptions in Chinese with examples | Manually expanded |
+| Local `kb.json` | 2100+ feature descriptions in Chinese with AI-generated usage guides | Auto-enriched via `enrich-kb.bat` |
 
 ## 🔧 Knowledge Base Contributions
 
@@ -91,7 +93,20 @@ what-claude-update/
 }
 ```
 
-To add a new entry: follow the format above in `kb.json`. The key field is `enKeywords` — these English keywords are used to match against GitHub release notes.
+### Auto-Enrich with AI
+
+Run `enrich-kb.bat` to call your local Claude CLI and generate real, specific usage steps and tips for every feature entry. This replaces generic placeholder text with actionable guides.
+
+```bash
+# Double-click enrich-kb.bat, or:
+node enrich-kb.js
+```
+
+The script processes entries one by one, saves after each, and can be interrupted/resumed at any time.
+
+### Manual Entries
+
+To add a new entry manually: follow the format above in `kb.json`. The key field is `enKeywords` — these English keywords are used to match against GitHub release notes.
 
 ## 📝 Version Coverage
 

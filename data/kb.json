@@ -5259,11 +5259,15 @@
     ],
     "descZh": "Fixed session title being derived from plugin monitor notifications before the user's first prompt",
     "usageSteps": [
-      "修复了 session title being derived from plugin monitor notifications bef",
-      "重启会话使修复生效"
+      "在启用了插件的会话中，直接输入你的第一个问题即可——会话标题现在会正确地从你的实际第一条消息中提取，而不会被之前的插件监控通知所污染。",
+      "输入第一条 prompt 后，查看标签页标题或使用 /resume 列表，确认会话标题反映的是你真正的问题内容而非插件的启动通知信息。",
+      "如果需要在插件启动阶段观察行为，可以在发送首条 prompt 前先等待插件初始化完成，再输入问题以验证标题生成逻辑。"
     ],
     "tips": [
-      "重启会话使修复生效"
+      "插件启动时的监控通知不会再被误当作会话标题",
+      "如果你修改了第一条 prompt（重新编辑），标题也会随之更新",
+      "仅影响插件 monitor 通知，不影响其他系统消息",
+      "长时间运行的插件在首条 prompt 前的输出不会干扰标题"
     ]
   },
   "feature-372": {
@@ -5433,11 +5437,14 @@
     ],
     "descZh": "Fixed early analytics events being silently dropped when fired before logger initialization",
     "usageSteps": [
-      "修复了 early analytics events being silently dropped when fired before l",
-      "重启会话使修复生效"
+      "在 ~/.claude/settings.json 中确认 \"telemetryEnabled\" 未设为 false，确保事件收集开关已开启",
+      "启动 claude 后立即执行的命令或操作，其分析事件现在会被自动缓存，无需等待 logger 就绪",
+      "通过 ~/.claude/debug/ 下的日志文件验证早期事件是否被正确记录，搜索 \"early event queued\" 关键字"
     ],
     "tips": [
-      "重启会话使修复生效"
+      "早期事件会暂存内存中，进程异常退出时仍可能丢失",
+      "缓存队列有上限，短时间内大量事件可能触发丢弃",
+      "该修复仅影响 SDK 内部事件流，不改变自定义 hook 的执行时序"
     ]
   },
   "feature-379": {
@@ -5457,12 +5464,15 @@
     ],
     "descZh": "Fixed `claude plugin install` failing for plugins whose marketplace `ref` no longer exists upstream when a `sha` is also pinned",
     "usageSteps": [
-      "涉及的 `claude plugin install`、`ref` 问题已修复",
-      "重启会话使修复生效"
+      "安装插件时同时指定 ref 和 sha 引脚：claude plugin install <plugin-name> --ref <分支/标签> --sha <commit-hash>",
+      "若市场插件引用的上游分支或标签已被删除，可通过 sha 引脚锁定历史提交来安装，命令如 claude plugin install my-plugin --sha abc1234",
+      "在插件的 marketplace 配置中同时填写 ref 和 sha 字段，确保 ref 失效时 claude plugin install 能回退到 sha 提交",
+      "插件开发者发布新版本后删除了旧 ref，用户可编辑本地插件配置，补充 sha 值后重新执行 claude plugin install"
     ],
     "tips": [
-      "关键词：claude plugin install、ref、sha",
-      "重启会话使修复生效"
+      "sha 必须指向 ref 历史上曾经存在的提交，否则安装仍会失败",
+      "仅 ref 失效时 sha 回退才生效，两者都失效则无法安装",
+      "sha 引脚会绕过上游变更，注意定期核对插件版本是否过时"
     ]
   },
   "feature-380": {
@@ -5557,11 +5567,14 @@
     ],
     "descZh": "Fixed MCP HTTP/SSE servers returning 403 on connect showing as \"failed\" instead of \"needs auth\"",
     "usageSteps": [
-      "修复了 MCP HTTP/SSE servers returning 403 on connect showing as \"failed\"",
-      "重启会话使修复生效"
+      "在 claude.json 或 settings.json 中配置 MCP server 时，为需要认证的 HTTP/SSE 服务添加 headers 字段，填入 Authorization 或 X-API-Key 等认证头",
+      "使用 /mcp 命令或 claude --mcp-status 查看 MCP 服务器连接状态，403 响应现在会明确显示为\"needs auth\"而非\"failed\"",
+      "根据\"needs auth\"提示检查认证配置：确认 token 未过期、API key 有效、OAuth 凭证在有效期内，修正后重新连接即可"
     ],
     "tips": [
-      "重启会话使修复生效"
+      "\"needs auth\"仅在 HTTP/SSE 类型 MCP 服务器返回 403 时触发，stdio 类型或网络超时不适用",
+      "部分服务 401 和 403 混用，若服务实际返回 401 可能仍显示为\"failed\"而非\"needs auth\"",
+      "配置文件中的认证 token 避免硬编码，建议使用环境变量引用如 ${env:MY_API_KEY}"
     ]
   },
   "feature-384": {
@@ -5581,11 +5594,14 @@
     ],
     "descZh": "Fixed remote MCP servers disconnecting unnecessarily when the optional server-events stream failed to reconnect — tool calls continue over POST",
     "usageSteps": [
-      "修复了 remote MCP servers disconnecting unnecessarily when the optional ",
-      "重启会话使修复生效"
+      "在 .claude/settings.json 的 mcpServers 中配置远程服务器，transport 设为 \"streamable-http\" 或 \"sse\"",
+      "即使 SSE 事件流因网络波动断连，无需手动重连 — 工具调用自动通过 POST 继续工作",
+      "用 /mcp 命令查看服务器状态，status 显示 connected 但 events 标记为 degraded 时属正常"
     ],
     "tips": [
-      "重启会话使修复生效"
+      "事件流失效时服务器不会标记断开，但服务端主动推送的通知（如资源变更）将收不到",
+      "仅适用于 optional server-events 流；核心工具调用走 POST 路径不受事件流影响",
+      "如果你的远程 MCP 依赖实时事件推送，建议检查服务端是否支持事件流自动重连"
     ]
   },
   "feature-385": {
@@ -5605,11 +5621,15 @@
     ],
     "descZh": "Fixed Remote Control MCP connectors all failing with 401 when the worker session token rotated mid-session",
     "usageSteps": [
-      "修复了 Remote Control MCP connectors all failing with 401 when the worke",
-      "重启会话使修复生效"
+      "在 settings.json 中为 remote-control MCP 配置 oauth 类型的 token 刷新端点，如 \"auth\": {\"type\": \"oauth\", \"refreshEndpoint\": \"https://...\"}",
+      "当 CLI 提示 401 错误时，手动执行 /mcp reconnect <server-name> 强制触发 token 刷新和重连",
+      "检查 ~/.claude/credentials.json 中缓存的 token 是否过期，删除对应条目后重启 Claude Code 触发重新认证"
     ],
     "tips": [
-      "重启会话使修复生效"
+      "token 轮换间隔建议设为 session 时长的 2 倍以上，避免频繁 401",
+      "worker 进程不会自动重试 401，需依赖外层 CLI 检测并触发刷新",
+      "多 worker 并发时 token 刷新可能存在竞态，建议串行化认证流程",
+      "credentials.json 中的旧 token 不会被自动清理，长期使用会累积"
     ]
   },
   "feature-386": {
@@ -5654,11 +5674,14 @@
     ],
     "descZh": "Fixed a race where early OTel spans could be silently dropped in SDK/headless mode with beta tracing enabled",
     "usageSteps": [
-      "修复了 race where early OTel spans could be silently dropped in SDK/head",
-      "重启会话使修复生效"
+      "在 settings.json 中启用 beta tracing：设置 \"tracingEnabled\": true 和 \"tracingMode\": \"beta\"，重启 Claude Code 使配置生效",
+      "SDK/headless 模式下，通过 --trace-output 参数指定 span 输出路径，避免默认缓冲区溢出导致丢失",
+      "在代码中尽早初始化 OTel exporter，确保首个 span 创建前 BatchSpanProcessor 已就绪；如使用自定义 SDK 集成，添加 await tracerProvider.forceFlush() 等待导出完成"
     ],
     "tips": [
-      "重启会话使修复生效"
+      "beta tracing 仅覆盖工具调用 span，不包含模型推理内部耗时",
+      "headless 模式下无 UI 渲染循环，span 批次可能因进程过早退出而来不及 flush",
+      "确保 OTel SDK 与 Claude Code 使用的 exporter 版本兼容，避免协议不匹配"
     ]
   },
   "feature-388": {
