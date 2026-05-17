@@ -5775,11 +5775,14 @@
     ],
     "descZh": "Bedrock: `awsCredentialExport` now always runs when configured instead of being skipped when ambient AWS credentials resolve, fixing auth for cross-account access",
     "usageSteps": [
-      "该功能涉及 `awsCredentialExport`",
-      "详情：Bedrock: `awsCredentialExport` now always runs when configured in"
+      "在 ~/.claude/settings.json 的 Bedrock 配置中添加 `awsCredentialExport` 字段，值为导出跨账号凭证的脚本路径或命令字符串",
+      "脚本内容示例：`aws sts assume-role --role-arn arn:aws:iam::<目标账号ID>:role/<角色名> --role-session-name claude-code` 输出 `export` 格式的环境变量行",
+      "使用 `claude --provider bedrock --model <model-id>` 启动，通过 `aws sts get-caller-identity` 验证当前生效的是目标账号而非环境变量中的默认账号"
     ],
     "tips": [
-      "关键词：awsCredentialExport"
+      "导出脚本必须向 stdout 输出 `export KEY=VALUE` 格式，否则凭证不会被正确注入",
+      "STS assume-role 会产生 API 调用费用，避免在导出命令中放置高频操作",
+      "升级到此行为变更前检查：之前的 ambient 跳过逻辑可能导致你一直用的是错误账号"
     ]
   },
   "feature-392": {
@@ -5799,11 +5802,14 @@
     ],
     "descZh": "[VSCode] Fixed in-chat mic showing no feedback when the microphone produced only silence — now shows \"No audio detected\"",
     "usageSteps": [
-      "修复了 in-chat mic showing no feedback when the microphone produced only",
-      "重启会话使修复生效"
+      "在 VSCode 中打开 Claude Code 聊天面板，点击输入框旁的麦克风图标开始语音输入",
+      "保持静默或远离麦克风说话，观察聊天输入区域是否显示\"No audio detected\"提示",
+      "正常说话测试语音识别，确认从静默状态恢复后仍能正常捕捉并转录语音内容"
     ],
     "tips": [
-      "重启会话使修复生效"
+      "麦克风权限需在系统设置中已授予 VSCode，否则静默检测不会触发",
+      "提示仅在连续静默约 2-3 秒后出现，短暂停顿不会误触发",
+      "部分 USB 麦克风驱动会返回零值而非静默信号，可能导致提示不出现"
     ]
   },
   "feature-393": {
@@ -5823,11 +5829,14 @@
     ],
     "descZh": "[VSCode] Voice mode: the WSL error now suggests installing `sox libsox-fmt-pulse` for WSLg users",
     "usageSteps": [
-      "该功能涉及 `sox libsox-fmt-pulse`",
-      "详情：Voice mode: the WSL error now suggests installing `sox libsox-fmt"
+      "在 WSL 终端运行：sudo apt install sox libsox-fmt-pulse，安装语音录制所需的音频处理库",
+      "重启 WSL 会话或运行 wsl --shutdown 后重新打开终端，确保音频设备被 WSLg 正确识别",
+      "在 VSCode 中按 Ctrl+Shift+P 输入 Voice: Start Voice Mode，验证语音模式可正常启用录音"
     ],
     "tips": [
-      "关键词：sox libsox-fmt-pulse"
+      "仅 WSLg（WSL 2 + GUI）环境需要此操作，WSL 1 不支持图形音频",
+      "安装后若仍报错，确认 pulseaudio 服务已启动：pulseaudio --start",
+      "Windows 端麦克风权限需在 设置→隐私→麦克风 中对 WSL 进程放行"
     ]
   },
   "feature-394": {

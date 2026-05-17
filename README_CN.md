@@ -20,7 +20,7 @@
 | 📦 **增量同步** | 已缓存的版本永久保留，每次只获取新增版本，秒级完成 |
 | 🌐 **中英双语** | 一键切换中文/英文模式，中文含原创使用指南，英文保留原始 release notes |
 | 🃏 **功能卡片** | 每个功能独立卡片，按分类分组（插件系统、Agent、CLI命令、工作树……） |
-| 💡 **使用示例** | 每个功能配有终端命令实操示例，可直接复制使用 |
+| 💡 **使用示例** | 2100+ 条功能均含 AI 生成的使用步骤和实用提示 |
 | 🔍 **智能搜索** | 搜索版本号或功能名，实时过滤；支持 v0.x / v1.x / v2.x 主版本筛选 |
 | 🎨 **深色模式** | 自动跟随系统深色/浅色主题 |
 | ⚡ **零依赖** | 仅使用 Node.js 内置模块，无需 npm install |
@@ -39,11 +39,11 @@
 git clone https://github.com/jovetickop/what-claude-update.git
 cd what-claude-update
 
-# 2. 双击运行
+# 2. 双击运行 update.bat（获取版本数据 + 生成 HTML）
 update.bat
 
-# 或命令行运行
-node generate.js
+# 3. （可选）双击 enrich-kb.bat（调用本地 Claude CLI 为每条功能生成真实使用指南）
+enrich-kb.bat
 ```
 
 首次运行约需 15 秒（获取 409 个版本 + 112 个 release notes），之后每次运行仅需 3 秒（增量检查）。
@@ -54,9 +54,37 @@ node generate.js
 |------|------|----------|
 | [npm registry](https://www.npmjs.com/package/@anthropic-ai/claude-code) | 409 个版本号 + 发布日期 | 每次运行 |
 | [GitHub Releases](https://github.com/anthropics/claude-code/releases) | 112 个版本的详细更新日志 | 有新版本时 |
-| 本地 `kb.json` | 53+ 条功能的中文说明和使用示例 | 手动扩充 |
+| 本地 `kb.json` | 2100+ 条功能的中文说明和 AI 生成的使用指南 | 运行 `enrich-kb.bat` 自动充实 |
+
+## 📁 项目结构
+
+```
+what-claude-update/
+├── update.bat              # 入口（双击）— 获取版本数据 + 生成 HTML
+├── enrich-kb.bat           # AI 知识库充实工具（双击）— 调用 Claude CLI 生成真实内容
+├── enrich-kb.js            # 充实脚本核心，逐条调用本地 Claude CLI
+├── generate.js             # 核心生成脚本
+├── claude-versions.html    # ← 生成的网页输出（浏览器打开）
+├── data/
+│   ├── kb.json             # 知识库（2100+ 条目，含中文使用指南）
+│   └── versions-cache.json # 版本缓存（增量更新基础）
+└── README.md / README_CN.md
+```
 
 ## 🔧 知识库贡献
+
+### AI 自动充实
+
+运行 `enrich-kb.bat` 调用本地 Claude CLI，为每条功能特性自动生成具体的使用步骤和注意事项，替换通用占位文本。
+
+```bash
+# 双击 enrich-kb.bat，或：
+node enrich-kb.js
+```
+
+逐条处理，每处理一条自动保存，可随时中断续跑。
+
+### 手动添加
 
 按以下格式在 `data/kb.json` 中新增条目即可，下次运行自动生效。关键是填写准确的 `enKeywords`（英文关键词），用于匹配 GitHub release notes 中的原始英文内容。
 
