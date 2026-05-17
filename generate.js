@@ -906,8 +906,11 @@ function generateHTML(data) {
       zhHTML = '<div class="no-features">此版本暂无详细功能记录，后续版本将逐步补充</div>';
     }
 
+    // 统计功能条目数量
+    const featuresCount = (info.rawItems || []).length;
+
     return `
-    <details class="version-card ${isLatest ? 'version-latest' : ''}" data-version="${esc(ver)}" data-major="${major}" data-date="${date}" data-content="${esc((info.rawItems || []).map(r => r.text).join(' ') + ' ' + ver)}">
+    <details class="version-card ${isLatest ? 'version-latest' : ''}" data-version="${esc(ver)}" data-major="${major}" data-date="${date}" data-content="${esc((info.rawItems || []).map(r => r.text).join(' ') + ' ' + ver)}" data-features-count="${featuresCount}">
       <summary class="version-header">
         <div class="version-info">
           <span class="version-number">v${esc(ver)}</span>
@@ -1453,8 +1456,76 @@ ${fromCache ? '<span class="cache-note">⚠️ 离线模式 — 使用缓存数�
     document.querySelector('.filter-btn.active .filter-count').textContent = visible;
   }
 
-  // 默认展开最新版本
-  document.querySelector('.version-card')?.setAttribute('open', '');
+  // ====== 懒加载展开逻辑 ======
+  /**
+   * 滚动停止 0.5 秒后自动展开第一个可见的收起卡片
+   * 如果已有展开的卡片，不再展开其他卡片
+   */
+  function expandOnVisible() {
+    // 如果已经有展开的卡片，不再展开
+    const openCards = document.querySelectorAll('.version-card[open]');
+    if (openCards.length > 0) return;
+
+    // 找到第一个可见的收起卡片并展开
+    const details = document.querySelectorAll('.version-card');
+    for (const detailsEl of details) {
+      if (detailsEl.hidden) continue; // 跳过隐藏的元素
+      if (detailsEl.hasAttribute('open')) continue; // 跳过已展开的
+
+      const rect = detailsEl.getBoundingClientRect();
+      const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+
+      if (isVisible) {
+        detailsEl.setAttribute('open', '');
+        break;
+      }
+    }
+  }
+
+  /**
+   * 当卡片离开可视区域时自动收起
+   * 使用 IntersectionObserver 监听卡片可见性
+   */
+  function collapseOnHidden() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const card = entry.target;
+        if (!entry.isIntersecting) {
+          // 离开可视区域，收起卡片
+          if (card.hasAttribute('open')) {
+            card.removeAttribute('open');
+          }
+        }
+      });
+    }, { root: null });
+
+    document.querySelectorAll('.version-card').forEach(card => {
+      observer.observe(card);
+    });
+  }
+
+  // 滚动停止检测定时器
+  let scrollTimer = null;
+
+  /**
+   * 监听滚动事件，检测滚动停止
+   * 当滚动停止 0.5 秒后，检查可见的版本卡片并自动展开
+   */
+  function handleScroll() {
+    if (scrollTimer) {
+      clearTimeout(scrollTimer);
+    }
+
+    scrollTimer = setTimeout(() => {
+      expandOnVisible();
+    }, 500); // 0.5 秒后触发，更快响应
+  }
+
+  // 页面加载后启动懒加载逻辑
+  document.addEventListener('DOMContentLoaded', () => {
+    window.addEventListener('scroll', handleScroll);
+    collapseOnHidden();
+  });
 </script>
 </body>
 </html>`;
