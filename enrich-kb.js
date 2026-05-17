@@ -1,10 +1,13 @@
 // enrich-kb.js — 调用本地 Claude CLI 逐条为知识库条目生成真实使用指南
+const { spawn } = require('child_process');
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
 
 const KB_PATH = path.join(__dirname, 'data', 'kb.json');
 const ERROR_LOG = path.join(__dirname, 'data', 'enrich-errors.log');
+
+// 用于存储当前活跃的 Claude 子进程，allow-Control-C 时关闭
+let currentChild = null;
 
 // 通用占位内容的特征模式
 const GENERIC_PATTERNS = [
@@ -53,26 +56,27 @@ function buildPrompt(data) {
   };
   const verb = verbMap[data.changeType] || '如何使用';
 
-  return `你是 Claude Code 专家。根据以下功能信息使用subagent给出实用指南。
+  // 使用英文 prompt 发送给 Claude CLI，AI 对英文指令响应更好
+  return `You are a Claude Code expert. Provide a practical usage guide with subagent based on the following feature information.
 
-功能：${data.titleZh}
-描述：${data.descZh || data.titleZh}
-分类：${data.category || '其他'}
-类型：${data.changeType || '新增'}
+Feature: ${data.titleZh}
+Description: ${data.descZh || data.titleZh}
+Category: ${data.category || '其他'}
+Type: ${data.changeType || '新增'}
 
-严格按以下 JSON 输出（只输出 JSON）：
+Output strictly in the following JSON format (JSON only):
 {
-  "usageSteps": ["操作步骤1", "操作步骤2", "操作步骤3"],
-  "tips": ["注意事项1", "注意事项2"]
+  "usageSteps": ["step 1", "step 2", "step 3"],
+  "tips": ["tip 1", "tip 2"]
 }
 
-要求：
-- 每条 usageStep 15-60 中文字，引用具体命令/按键/参数/路径
-- 每条 tip 10-40 中文字，指出限制/陷阱/使用技巧
-- 禁止"升级到最新版本""查看官方文档""使用 /help"等废话`;
+Requirements:
+- Each usageStep: 15-60 Chinese characters, reference specific commands/keys/parameters/paths
+- Each tip: 10-40 Chinese characters, point out limitations/pitfalls/tips
+- Forbidden: "upgrade to latest version", "check official docs", "use /help" and other generic filler`;
 }
 
-function main() {
+async function main() {
   // 读取知识库
   let kb;
   try {
@@ -99,12 +103,39 @@ function main() {
 
     try {
       process.stdout.write(`${pct} ${data.introducedIn} ${data.titleZh.slice(0, 45)}... `);
-      const result = execSync('claude -p -', {
-        input: buildPrompt(data),
-        encoding: 'utf8',
-        timeout: 120000,
-        windowsHide: true,
-        maxBuffer: 5 * 1024 * 1024
+
+      // 使用 spawn 替代 execSync，以便控制子进程生命周期
+      const result = await new Promise((resolve, reject) => {
+        const child = spawn('claude', ['-p', '-'], {
+          encoding: 'utf8',
+          timeout: 120000,
+          windowsHide: true,
+          stdio: ['pipe', 'pipe', 'pipe']
+        });
+        currentChild = child;
+
+        let stdout = '';
+        let stderr = '';
+
+        child.stdout.on('data', d => { stdout += d; });
+        child.stderr.on('data', d => { stderr += d; });
+
+        child.on('error', err => {
+          currentChild = null;
+          reject(new Error(err.message));
+        });
+
+        child.on('close', code => {
+          currentChild = null;
+          if (code !== 0 && stderr) {
+            reject(new Error(stderr.slice(0, 100)));
+          } else {
+            resolve(stdout);
+          }
+        });
+
+        child.stdin.write(buildPrompt(data));
+        child.stdin.end();
       });
 
       // 提取并解析 JSON
@@ -154,5 +185,16 @@ function main() {
   console.log('\n========================================');
   log(`完成: ${ok} 成功 | ${skip} 跳过 | ${fail} 失败 | 总计 ${entries.length}`);
 }
+
+// ========== 清理子进程 ==========
+function cleanup() {
+  log('正在关闭 Claude 子进程...');
+  if (currentChild) {
+    currentChild.kill();
+    currentChild = null;
+  }
+}
+process.on('SIGINT', () => { cleanup(); process.exit(0); });
+process.on('SIGTERM', () => { cleanup(); process.exit(0); });
 
 main();

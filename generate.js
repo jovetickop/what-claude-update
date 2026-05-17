@@ -4,6 +4,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { spawn } = require('child_process');
 
 // ========== 配置 ==========
 const SCRIPT_DIR = __dirname;
@@ -15,6 +16,440 @@ const OUTPUT_HTML = path.join(SCRIPT_DIR, 'claude-versions.html');
 const NPM_PACKAGE = '@anthropic-ai/claude-code';
 const GITHUB_RELEASES_API = 'https://api.github.com/repos/anthropics/claude-code/releases';
 const GITHUB_PER_PAGE = 100;
+const TRANSLATION_CACHE_PATH = path.join(DATA_DIR, 'translation-cache.json');
+
+// 用于存储当前活跃的 Claude 子进程
+let currentChild = null;
+
+// ========== 翻译功能 ==========
+
+/** 读取翻译缓存 */
+function readTranslationCache() {
+  if (fs.existsSync(TRANSLATION_CACHE_PATH)) {
+    try {
+      return JSON.parse(fs.readFileSync(TRANSLATION_CACHE_PATH, 'utf8'));
+    } catch (e) {
+      log('翻译缓存文件损坏，重新创建');
+    }
+  }
+  return {};
+}
+
+/** 写入翻译缓存 */
+function writeTranslationCache(cache) {
+  fs.writeFileSync(TRANSLATION_CACHE_PATH, JSON.stringify(cache, null, 2), 'utf8');
+}
+
+// ========== 翻译映射表（静态翻译，不调 API）==========
+
+/**
+ * 常用英文短语的翻译映射表
+ * 包含 50+ 条常见 release notes 表达
+ */
+const TRANSLATION_MAP = {
+  // 基础动作类
+  'Added': '新增',
+  'Fixed': '修复',
+  'Improved': '改进',
+  'Enhanced': '增强',
+  'Removed': '移除',
+  'Deprecated': '弃用',
+  'Updated': '更新',
+  'Changed': '变更',
+  'Renamed': '重命名',
+  'Moved': '移动',
+  'Copied': '复制',
+  'Created': '创建',
+  'Deleted': '删除',
+  'Reverted': '回退',
+  'Reverted': '还原',
+
+  // 功能描述类
+  'New feature': '新功能',
+  'Bug fix': '错误修复',
+  'Bug fixes': '错误修复',
+  'Breaking change': '破坏性变更',
+  'Breaking changes': '破坏性变更',
+  'Breaking': '破坏性变更',
+  'Performance improvement': '性能改进',
+  'Performance improvements': '性能改进',
+  'Performance fix': '性能修复',
+  'Security fix': '安全修复',
+  'Security improvement': '安全性改进',
+  'Documentation update': '文档更新',
+  'Documentation': '文档更新',
+
+  // UI/UX 类
+  'UI improvement': '界面改进',
+  'UX improvement': '体验改进',
+  'UI fix': '界面修复',
+  'UX fix': '体验修复',
+  'Design update': '设计更新',
+  'Accessibility improvement': '无障碍改进',
+
+  // 开发体验类
+  'Developer experience improvement': '开发者体验改进',
+  'DX improvement': '开发者体验改进',
+  'Error message improvement': '错误提示改进',
+  'Error handling improvement': '错误处理改进',
+  'Logging improvement': '日志改进',
+
+  // 特性类
+  'Feature': '功能',
+  'Features': '功能',
+  'New': '新功能',
+  'Support for': '支持',
+  'Support': '支持',
+  'Added support for': '新增支持',
+  'Added support': '新增支持',
+
+  // 配置/设置类
+  'Configuration': '配置',
+  'Config': '配置',
+  'Setting': '设置',
+  'Settings': '设置',
+  'Option': '选项',
+  'Options': '选项',
+  'Default': '默认值',
+
+  // 数据/存储类
+  'Data': '数据',
+  'Cache': '缓存',
+  'Storage': '存储',
+  'Database': '数据库',
+  'Export': '导出',
+  'Import': '导入',
+  'Sync': '同步',
+
+  // 网络/请求类
+  'Network': '网络',
+  'Request': '请求',
+  'Response': '响应',
+  'API': 'API',
+  'HTTP': 'HTTP',
+  'WebSocket': 'WebSocket',
+  'Timeout': '超时',
+
+  // 认证/安全类
+  'Authentication': '认证',
+  'Authorization': '授权',
+  'Security': '安全',
+  'Permission': '权限',
+  'Token': '令牌',
+  'Credentials': '凭证',
+  'Encryption': '加密',
+  'Token refresh': '令牌刷新',
+
+  // 文件/路径类
+  'File': '文件',
+  'Files': '文件',
+  'Path': '路径',
+  'Directory': '目录',
+  'Folder': '文件夹',
+  'Filename': '文件名',
+  'Extension': '扩展名',
+
+  // 命令/操作类
+  'Command': '命令',
+  'CLI': 'CLI',
+  'Argument': '参数',
+  'Flag': '标志',
+  'Option': '选项',
+  'Alias': '别名',
+
+  // 工具/工具类
+  'Tool': '工具',
+  'Tools': '工具',
+  'Integration': '集成',
+  'Plugin': '插件',
+  'Extension': '扩展',
+
+  // 状态/进度类
+  'Status': '状态',
+  'Progress': '进度',
+  'Progress indicator': '进度指示器',
+  'Loading': '加载中',
+  'Loading state': '加载状态',
+  'Empty state': '空状态',
+
+  // 输入/验证类
+  'Input validation': '输入验证',
+  'Validation': '验证',
+  'Validation error': '验证错误',
+  'Type checking': '类型检查',
+  'Type error': '类型错误',
+
+  // 常见组合
+  'Added support for': '新增支持',
+  'Improved support for': '改进支持',
+  'Fixed issue with': '修复问题',
+  'Fixed bug in': '修复错误',
+  'Fixed bug with': '修复错误',
+  'Improved performance of': '改进性能',
+  'Improved error handling for': '改进错误处理',
+  'Added new': '新增',
+  'Improved the': '改进',
+  'Fixed the': '修复',
+  'Updated the': '更新',
+  'Added the': '新增',
+
+  // 括号内容翻译
+  'type to filter by name': '输入以按名称筛选',
+  'click to expand': '点击展开',
+  'click to collapse': '点击收起',
+  'coming soon': '即将推出',
+  'experimental': '实验性功能',
+  'deprecated': '已弃用',
+  'optional': '可选',
+  'required': '必填',
+  'beta': '测试版',
+  'alpha': 'Alpha 版本',
+  'preview': '预览版',
+
+  // 其他常见
+  'Internal': '内部',
+  'Internal change': '内部变更',
+  'Internal improvement': '内部改进',
+  'Refactored': '重构',
+  'Refactoring': '重构',
+  'Code cleanup': '代码清理',
+  'Code quality': '代码质量',
+  'Test coverage': '测试覆盖',
+  'Dependency update': '依赖更新',
+  'Dependency upgrade': '依赖升级',
+  'Dependency fix': '依赖修复',
+  'Breaking change in': '破坏性变更',
+  'Upgrade to': '升级到',
+  'Downgrade to': '降级到',
+  'Migrated to': '迁移到',
+  'Migration guide': '迁移指南',
+  'Migration': '迁移',
+  'Compatibility': '兼容性',
+  'Backward compatible': '向后兼容',
+  'Backward incompatibility': '向后不兼容',
+  'Notice': '注意',
+  'Important': '重要',
+  'Warning': '警告',
+  'Info': '信息',
+  'Hint': '提示',
+};
+
+/**
+ * 使用翻译映射表对文本进行智能翻译
+ * @param {string} text - 待翻译的英文文本
+ * @returns {string} - 翻译后的中文文本
+ */
+function translateWithMap(text) {
+  if (!text || typeof text !== 'string') return text;
+
+  let result = text;
+
+  // 1. 保护特殊内容：URL、版本号、代码片段、反引号内容
+  const placeholders = [];
+  let placeholderIndex = 0;
+
+  // 保护 URL（不翻译）
+  result = result.replace(/https?:\/\/[^\s\)\]]+/g, (match) => {
+    placeholders.push({ type: 'url', value: match });
+    return `__PH_URL_${placeholderIndex++}__`;
+  });
+
+  // 保护版本号格式（如 v1.2.3, v2.0.73）
+  result = result.replace(/v\d+\.\d+(\.\d+)?/g, (match) => {
+    placeholders.push({ type: 'version', value: match });
+    return `__PH_VER_${placeholderIndex++}__`;
+  });
+
+  // 保护反引号内容（代码片段）
+  result = result.replace(/`([^`]+)`/g, (match, code) => {
+    placeholders.push({ type: 'code', value: match });
+    return `__PH_CODE_${placeholderIndex++}__`;
+  });
+
+  // 保护 emoji（保留不翻译）
+  result = result.replace(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|[\u{1F600}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]/gu, (match) => {
+    placeholders.push({ type: 'emoji', value: match });
+    return `__PH_EMOJI_${placeholderIndex++}__`;
+  });
+
+  // 2. 处理括号内容
+  // 规则：将括号内容翻译为中文或移除英文说明
+  result = result.replace(/\(([^)]+)\)/g, (match, content) => {
+    const trimmed = content.trim().toLowerCase();
+    // 已知需要翻译的括号内容
+    const bracketTranslations = {
+      'type to filter by name': '输入以按名称筛选',
+      'click to expand': '点击展开',
+      'click to collapse': '点击收起',
+      'coming soon': '即将推出',
+      'experimental': '实验性',
+      'deprecated': '已弃用',
+      'optional': '可选',
+      'required': '必填',
+      'beta': '测试版',
+      'alpha': 'Alpha',
+      'preview': '预览',
+      'breaking': '破坏性',
+      'new': '新',
+    };
+    if (bracketTranslations[trimmed]) {
+      return `（${bracketTranslations[trimmed]}）`;
+    }
+    // 如果是简短的英文说明，翻译或移除
+    if (trimmed.length < 30 && /^[a-z\s\-]+$/.test(trimmed)) {
+      // 尝试翻译
+      let translated = content;
+      for (const [en, zh] of Object.entries(TRANSLATION_MAP)) {
+        const regex = new RegExp(`\\b${en}\\b`, 'gi');
+        translated = translated.replace(regex, zh);
+      }
+      if (translated !== content) {
+        return `（${translated}）`;
+      }
+    }
+    return match; // 保留原括号内容
+  });
+
+  // 3. 使用翻译映射表进行替换（按长度降序排列，避免部分匹配）
+  const sortedEntries = Object.entries(TRANSLATION_MAP).sort((a, b) => b[0].length - a[0].length);
+
+  for (const [en, zh] of sortedEntries) {
+    // 使用单词边界匹配，避免部分替换
+    const regex = new RegExp(`\\b${en.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi');
+    result = result.replace(regex, zh);
+  }
+
+  // 4. 清理可能残留的英文括号内容（简单英文说明）
+  result = result.replace(/\(([a-z][a-z\s\-]*)\)/gi, (match, content) => {
+    const trimmed = content.trim();
+    // 如果括号内是纯小写英文，可能是说明性文字，翻译或移除
+    if (trimmed.length > 0 && trimmed.length < 25 && /^[a-z][a-z\s\-]*$/.test(trimmed)) {
+      // 尝试在翻译映射中查找
+      let translated = trimmed;
+      for (const [en, zh] of sortedEntries) {
+        if (en.toLowerCase() === trimmed.toLowerCase()) {
+          return `（${zh}）`;
+        }
+      }
+      // 如果找不到，移除括号内容
+      return '';
+    }
+    return match;
+  });
+
+  // 5. 恢复被保护的内容
+  for (let i = 0; i < placeholders.length; i++) {
+    const placeholder = `__PH_${placeholders[i].type.toUpperCase()}_${i}__`;
+    result = result.replace(placeholder, placeholders[i].value);
+  }
+
+  // 6. 清理多余空格
+  result = result.replace(/\s+/g, ' ').trim();
+
+  return result;
+}
+
+/** 调用 Claude CLI 将英文翻译为中文（保留格式标记） */
+async function translateWithClaude(text) {
+  if (!text || !text.trim()) return text;
+
+  const cache = readTranslationCache();
+  if (cache[text]) return cache[text];
+
+  const prompt = `You are a professional translator. Translate the following English release notes to natural Chinese.
+
+Rules:
+- Preserve emoji symbols like ✨ 🎉 🔧 🐛 etc.
+- Preserve version numbers like v2.0.73
+- Preserve code snippets in backticks
+- Preserve markdown formatting like **bold**
+- Keep line breaks as-is
+- Translate meaning naturally, not word-by-word
+- Use Chinese punctuation
+
+Text to translate:
+${text}
+
+Output ONLY the Chinese translation, no explanations or markdown code blocks.`;
+
+  return new Promise((resolve, reject) => {
+    const child = spawn('claude', ['-p', '-'], {
+      encoding: 'utf8',
+      timeout: 60000,
+      windowsHide: true,
+      stdio: ['pipe', 'pipe', 'pipe']
+    });
+    currentChild = child;
+
+    let stdout = '';
+    let stderr = '';
+
+    child.stdout.on('data', d => { stdout += d; });
+    child.stderr.on('data', d => { stderr += d; });
+
+    child.on('error', err => {
+      currentChild = null;
+      reject(new Error(err.message));
+    });
+
+    child.on('close', code => {
+      currentChild = null;
+      if (code !== 0 && stderr) {
+        reject(new Error(stderr.slice(0, 100)));
+      } else {
+        const translated = stdout.trim();
+        // 缓存结果
+        cache[text] = translated;
+        writeTranslationCache(cache);
+        resolve(translated);
+      }
+    });
+
+    child.stdin.write(prompt);
+    child.stdin.end();
+  });
+}
+
+/** 批量翻译多条 release notes */
+async function translateItems(items) {
+  const results = [];
+  for (const item of items) {
+    try {
+      const cache = readTranslationCache();
+      let translated = cache[item.text];
+
+      // 如果缓存中没有，先尝试用翻译映射表
+      if (!translated) {
+        const mapped = translateWithMap(item.text);
+
+        // 检查翻译映射是否产生了有效的中文翻译
+        // 如果映射后文本与原文相同或变化很小，说明原文可能已经是中文或无需翻译
+        const hasChineseChars = /[一-龥]/.test(mapped);
+        const textChanged = mapped !== item.text;
+
+        if (hasChineseChars && textChanged) {
+          // 翻译映射表产生了有效翻译，缓存并使用
+          translated = mapped;
+          cache[item.text] = translated;
+          writeTranslationCache(cache);
+          log(`[翻译映射] ${item.text.slice(0, 40)}...`);
+        } else {
+          // 翻译映射表无法处理，调用 API
+          translated = await translateWithClaude(item.text);
+        }
+      }
+      results.push({ ...item, text: translated });
+      // 避免请求过快（只有调用 API 时才需要延迟）
+      if (!cache[item.text]) {
+        await new Promise(r => setTimeout(r, 300));
+      }
+    } catch (e) {
+      log(`翻译失败: ${e.message}`);
+      results.push({ ...item });
+    }
+  }
+  return results;
+}
 
 // ========== 工具函数 ==========
 
@@ -177,25 +612,13 @@ function matchToKB(items, kb) {
       // 跳过已经在本版本中使用过的 KB 条目
       if (usedKBIds.has(kbId)) continue;
 
-      // 优先用英文关键词匹配（精確匹配 GitHub release notes 原文）
-      const enKeywords = kbData.enKeywords || [];
-      if (enKeywords.length > 0) {
-        const enMatchCount = enKeywords.filter(kw => itemLower.includes(kw.toLowerCase())).length;
-        if (enMatchCount >= 1) {
-          result.push({ type: 'kb', kbId, kbData });
-          usedKBIds.add(kbId);
-          matched = true;
-          break;
-        }
-      }
-
-      // 备用：用中文标题关键词匹配
+      // 用中文标题关键词匹配条目与知识库
       if (!matched) {
         const titleWords = (kbData.titleZh || '').split(/[\s\-，,、]/);
         const zhWords = titleWords.filter(w => w.length >= 2);
         const zhMatchCount = zhWords.filter(w => itemLower.includes(w.toLowerCase())).length;
         if (zhMatchCount >= 3) {
-          result.push({ type: 'kb', kbId, kbData });
+          result.push({ type: 'kb', kbId, kbData, text: item.text });
           usedKBIds.add(kbId);
           matched = true;
           break;
@@ -228,12 +651,10 @@ async function processVersions() {
   const newVersions = npmVersions.filter(v => !cachedVersions.has(v.version));
   log(`缓存已有 ${cachedVersions.size} 个版本，${newVersions.length} 个新版本`);
 
-  // 4. 获取 GitHub releases（只要有新版本就获取）
+  // 4. 获取 GitHub releases（翻页获取所有版本以支持翻译重建）
   let githubReleases = [];
-  if (newVersions.length > 0) {
-    const ghData = await fetchGitHubReleases();
-    if (ghData) githubReleases = ghData;
-  }
+  const ghData = await fetchGitHubReleases();
+  if (ghData) githubReleases = ghData;
 
   // 5. 创建 GitHub release 查找映射
   const releaseMap = {};
@@ -243,16 +664,25 @@ async function processVersions() {
     releaseMap[ver] = rel;
   }
 
-  // 6. 处理新版本
+  // 6. 处理所有版本（包括已有版本，翻译英文条目）
+  // 确保所有版本的 rawItems 都是翻译后的中文
   let processedCount = 0;
-  for (const v of newVersions) {
+  for (const v of npmVersions) {
     const rel = releaseMap[v.version];
     const rawItems = rel ? parseReleaseNotes(rel.body) : [];
-    const features = matchToKB(rawItems, kb);
+
+    // 翻译所有 rawItems 条目（使用缓存，已翻译则直接使用）
+    const translatedRawItems = await translateItems(rawItems);
+
+    // 知识库匹配时使用翻译后的文本进行匹配
+    const features = matchToKB(
+      translatedRawItems.map(r => ({ text: r.text, type: r.type })),
+      kb
+    );
 
     cache.versions[v.version] = {
       date: v.date,
-      rawItems: rawItems.map(r => ({ text: r.text, type: r.type })),
+      rawItems: translatedRawItems.map(r => ({ text: r.text, type: r.type })),
       features
     };
     processedCount++;
@@ -440,7 +870,14 @@ function generateHTML(data) {
       zhHTML = Object.entries(kbGroups).map(([cat, items]) => `
         <div class="category-group">
           <div class="category-header">${categoryIcon(cat)} ${esc(cat)} (${items.length} 项变更)</div>
-          ${items.map(f => renderFeatureCard(f, ver)).join('')}
+          ${items.map(f => {
+            // 修复：从实时 kb 对象读取最新数据，替代缓存的 feature.kbData
+            if (f.type === 'kb' && f.kbId && kb[f.kbId]) {
+              const freshFeature = { ...f, kbData: kb[f.kbId] };
+              return renderFeatureCard(freshFeature, ver);
+            }
+            return renderFeatureCard(f, ver);
+          }).join('')}
         </div>
       `).join('');
     }
@@ -450,7 +887,7 @@ function generateHTML(data) {
         <div class="category-group raw-pending">
           <div class="category-header">📋 其他更新 (${rawFeatures.length} 项) — 中文说明编写中</div>
           <div class="raw-pending-hint">
-            💡 这些功能的中文使用指南正在编写中，可切换到 <a href="javascript:toggleLang()" style="color:var(--accent);text-decoration:underline">英文模式</a> 查看原始说明。
+            💡 这些功能的中文使用指南正在编写中。
           </div>
           <div class="raw-items-preview">
             ${rawFeatures.map(r => `
@@ -466,45 +903,25 @@ function generateHTML(data) {
       zhHTML = '<div class="no-features">此版本暂无详细功能记录，后续版本将逐步补充</div>';
     }
 
-    // 英文内容：原始 GitHub release notes（结构化展示）
-    let enHTML = '';
-    if (rawItems.length > 0) {
-      enHTML = `
-        <div class="category-group">
-          <div class="category-header">📋 Changes (${rawItems.length} items)</div>
-          ${rawItems.map(r => `
-            <div class="feature-card feature-raw-item">
-              <div class="feature-header">
-                <span class="feature-title">${parseInlineMarkdown(esc(r.text))}</span>
-                ${typeTag(r.type || 'Changed')}
-              </div>
-            </div>
-          `).join('')}
-        </div>`;
-    } else {
-      enHTML = '<div class="no-features">No release notes available for this version</div>';
-    }
-
     return `
     <div class="version-card ${isLatest ? 'version-latest' : ''}"
          data-version="${esc(ver)}"
          data-major="${major}"
          data-date="${date}"
          data-content="${esc((info.rawItems || []).map(r => r.text).join(' ') + ' ' + ver)}">
-      <div class="version-header">
+      <div class="version-header" onclick="this.closest('.version-card').classList.toggle('expanded')">
         <div class="version-info">
           <span class="version-number">v${esc(ver)}</span>
-          ${isLatest ? '<span class="version-latest-tag">🆕 最新 / Latest</span>' : ''}
+          ${isLatest ? '<span class="version-latest-tag">🆕 最新</span>' : ''}
           <span class="version-date">📅 ${date}</span>
           <span class="version-major-tag">${major}</span>
         </div>
         <button class="expand-btn" onclick="this.closest('.version-card').classList.toggle('expanded')">
-          展开详情 / Expand ▼
+          展开详情 ▼
         </button>
       </div>
       <div class="version-body">
-        <div class="zh-content">${zhHTML}</div>
-        <div class="en-content" style="display:none">${enHTML}</div>
+        ${zhHTML}
       </div>
     </div>`;
   }).join('\n');
@@ -591,29 +1008,6 @@ function generateHTML(data) {
     border-radius: 20px;
     font-size: .8rem;
   }
-
-  /* 语言切换按钮 */
-  .lang-toggle {
-    background: rgba(255,255,255,.15);
-    color: #f1f5f9;
-    border: 1px solid rgba(255,255,255,.3);
-    padding: 4px 14px;
-    border-radius: 16px;
-    cursor: pointer;
-    font-size: .8rem;
-    font-weight: 600;
-    transition: all .2s;
-    white-space: nowrap;
-  }
-  .lang-toggle:hover { background: rgba(255,255,255,.25); }
-
-  /* 语言内容显示控制 */
-  body.lang-zh .zh-content { display: block; }
-  body.lang-zh .en-content { display: none; }
-  body.lang-en .zh-content { display: none; }
-  body.lang-en .en-content { display: block; }
-  body.lang-zh .zh-only { display: inline; }
-  body.lang-en .zh-only { display: none; }
 
   /* ====== 统计栏 ====== */
   .stats-bar {
@@ -977,7 +1371,7 @@ function generateHTML(data) {
   }
 </style>
 </head>
-<body class="lang-zh">
+<body>
 
 <!-- 头部 -->
 <header class="header">
@@ -986,10 +1380,7 @@ function generateHTML(data) {
     <span>📅 数据更新：${today}</span>
     <span>🏷️ 最新版本：v${latestVersion}</span>
     <span>📅 发布日期：${latestDate}</span>
-    <button class="lang-toggle" onclick="toggleLang()" id="langBtn" title="切换语言 / Switch Language">
-      🌐 中 / EN
-    </button>
-    ${fromCache ? '<span class="cache-note">⚠️ 离线模式 — 使用缓存数据</span>' : ''}
+${fromCache ? '<span class="cache-note">⚠️ 离线模式 — 使用缓存数据</span>' : ''}
   </div>
 </header>
 
@@ -1038,21 +1429,6 @@ function generateHTML(data) {
 </footer>
 
 <script>
-  // ====== 语言切换 ======
-  function toggleLang() {
-    const body = document.body;
-    const btn = document.getElementById('langBtn');
-    if (body.classList.contains('lang-zh')) {
-      body.classList.remove('lang-zh');
-      body.classList.add('lang-en');
-      btn.innerHTML = '🌐 EN / 中';
-    } else {
-      body.classList.remove('lang-en');
-      body.classList.add('lang-zh');
-      btn.innerHTML = '🌐 中 / EN';
-    }
-  }
-
   // ====== 过滤和搜索逻辑 ======
   let currentFilter = 'all';
 
