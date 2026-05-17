@@ -1,0 +1,362 @@
+[
+  {
+    "id": "feature-1153",
+    "title": "Fixed transcript chain breaks on `--resume` that could lose ...",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1154",
+    "title": "Fixed `cmd+delete` not deleting to start of line on iTerm2, ...",
+    "cat": "终端体验",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1155",
+    "title": "Fixed plan mode in remote sessions losing track of the plan ...",
+    "cat": "权限控制",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1156",
+    "title": "Fixed JSON schema validation for `permissions.defaultMode: \"...",
+    "cat": "权限控制",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1157",
+    "title": "Fixed Windows version cleanup not protecting the active vers...",
+    "cat": "安装与更新",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1158",
+    "title": "`/feedback` now explains why it's unavailable instead of dis...",
+    "cat": "其他",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1159",
+    "title": "Improved `/claude-api` skill guidance for agent design patte...",
+    "cat": "Agent 系统",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1160",
+    "title": "Improved performance: faster `stripAnsi` on Bun by routing t...",
+    "cat": "模型与性能",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1161",
+    "title": "Edit tool now uses shorter `old_string` anchors, reducing ou...",
+    "cat": "认证与安全",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1162",
+    "title": "Added `forceRemoteSettingsRefresh` policy setting: when set,...",
+    "cat": "CLI 命令",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1163",
+    "title": "Added interactive Bedrock setup wizard accessible from the l...",
+    "cat": "权限控制",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1164",
+    "title": "Added per-model and cache-hit breakdown to `/cost` for subsc...",
+    "cat": "模型与性能",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1165",
+    "title": "`/release-notes` is now an interactive version picker",
+    "cat": "安装与更新",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1166",
+    "title": "Remote Control session names now use your hostname as the de...",
+    "cat": "其他",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1167",
+    "title": "Pro users now see a footer hint when returning to a session ...",
+    "cat": "认证与安全",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1168",
+    "title": "Fixed subagent spawning permanently failing with \"Could not ...",
+    "cat": "Agent 系统",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1169",
+    "title": "Fixed prompt-type Stop hooks incorrectly failing when the sm...",
+    "cat": "Hook 系统",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1170",
+    "title": "Fixed tool input validation failures when streaming emits ar...",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1171",
+    "title": "Fixed an API 400 error that could occur when extended thinki...",
+    "cat": "模型与性能",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1172",
+    "title": "Fixed accidental feedback survey submissions from auto-pilot...",
+    "cat": "提示词管理",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1173",
+    "title": "Fixed misleading \"esc to interrupt\" hint appearing alongside...",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1174",
+    "title": "Fixed Homebrew install update prompts to use the cask's rele...",
+    "cat": "安装与更新",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1175",
+    "title": "Fixed `ctrl+e` jumping to the end of the next line when alre...",
+    "cat": "提示词管理",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1176",
+    "title": "Fixed an issue where the same message could appear at two po...",
+    "cat": "终端体验",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1177",
+    "title": "Fixed idle-return \"/clear to save X tokens\" hint showing cum...",
+    "cat": "认证与安全",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1178",
+    "title": "Fixed plugin MCP servers stuck \"connecting\" on session start...",
+    "cat": "插件系统",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1179",
+    "title": "Improved Write tool diff computation speed for large files (...",
+    "cat": "其他",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1180",
+    "title": "Removed `/tag` command",
+    "cat": "CLI 命令",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1181",
+    "title": "Removed `/vim` command (toggle vim mode via `/config` → Edit...",
+    "cat": "CLI 命令",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1182",
+    "title": "Linux sandbox now ships the `apply-seccomp` helper in both n...",
+    "cat": "CLI 命令",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1183",
+    "title": "Added support for Amazon Bedrock powered by Mantle, set `CLA...",
+    "cat": "其他",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1184",
+    "title": "Changed default effort level from medium to high for API-key...",
+    "cat": "模型与性能",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1185",
+    "title": "Added compact `Slacked #channel` header with a clickable cha...",
+    "cat": "MCP 集成",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1186",
+    "title": "Added `keep-coding-instructions` frontmatter field support f...",
+    "cat": "插件系统",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1187",
+    "title": "Added `hookSpecificOutput.sessionTitle` to `UserPromptSubmit...",
+    "cat": "Hook 系统",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1188",
+    "title": "Plugin skills declared via `\"skills\": [\"./\"]` now use the sk...",
+    "cat": "插件系统",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1189",
+    "title": "Fixed agents appearing stuck after a 429 rate-limit response...",
+    "cat": "Agent 系统",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1190",
+    "title": "Fixed Console login on macOS silently failing with \"Not logg...",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1191",
+    "title": "Fixed plugin skill hooks defined in YAML frontmatter being s...",
+    "cat": "插件系统",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1192",
+    "title": "Fixed plugin hooks failing with \"No such file or directory\" ...",
+    "cat": "插件系统",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1193",
+    "title": "Fixed `${CLAUDE_PLUGIN_ROOT}` resolving to the marketplace s...",
+    "cat": "插件系统",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1194",
+    "title": "Fixed scrollback showing the same diff repeated and blank pa...",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1195",
+    "title": "Fixed multiline user prompts in the transcript indenting wra...",
+    "cat": "提示词管理",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1196",
+    "title": "Fixed Shift+Space inserting the literal word \"space\" instead...",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1197",
+    "title": "Fixed hyperlinks opening two browser tabs when clicked insid...",
+    "cat": "CLI 命令",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1198",
+    "title": "Fixed an alt-screen rendering bug where content height chang...",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1199",
+    "title": "Fixed `FORCE_HYPERLINK` environment variable being ignored w...",
+    "cat": "配置管理",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1200",
+    "title": "Fixed native terminal cursor not tracking the selected tab i...",
+    "cat": "终端体验",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1201",
+    "title": "Fixed Bedrock invocation of Sonnet 3.5 v2 by using the `us.`...",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1202",
+    "title": "Fixed SDK/print mode not preserving the partial assistant re...",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1203",
+    "title": "Improved `--resume` to resume sessions from other worktrees ...",
+    "cat": "工作树",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1204",
+    "title": "Fixed CJK and other multibyte text being corrupted with U+FF...",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1205",
+    "title": "[VSCode] Reduced cold-open subprocess work on starting a ses...",
+    "cat": "其他",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1206",
+    "title": "[VSCode] Fixed dropdown menus selecting the wrong item when ...",
+    "cat": "其他",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1207",
+    "title": "[VSCode] Added a warning banner when `settings.json` files f...",
+    "cat": "权限控制",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1208",
+    "title": "Added focus view toggle (`Ctrl+O`) in `NO_FLICKER` mode show...",
+    "cat": "提示词管理",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1209",
+    "title": "Added `refreshInterval` status line setting to re-run the st...",
+    "cat": "CLI 命令",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1210",
+    "title": "Added `workspace.git_worktree` to the status line JSON input...",
+    "cat": "工作树",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1211",
+    "title": "Added `● N running` indicator in `/agents` next to agent typ...",
+    "cat": "Agent 系统",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1212",
+    "title": "Added syntax highlighting for Cedar policy files (`.cedar`, ...",
+    "cat": "主题与显示",
+    "type": "新增"
+  }
+]

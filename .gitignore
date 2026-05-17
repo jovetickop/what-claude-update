@@ -4,3 +4,9 @@ data/versions-cache.json
 # 临时文件
 data/_*.json
 _tmp_*.json
+.claude/settings.local.json
+data/enrich-errors.log
+claude-versions.html
+claude-versions.html
+claude-versions.html
+claude-versions.html

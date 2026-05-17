@@ -1,0 +1,44 @@
+[
+  {
+    "id": "feature-1393",
+    "title": "Added `ENABLE_PROMPT_CACHING_1H` env var to opt into 1-hour ...",
+    "cat": "提示词管理",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1394",
+    "title": "Added recap feature to provide context when returning to a s...",
+    "cat": "配置管理",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1395",
+    "title": "The model can now discover and invoke built-in slash command...",
+    "cat": "CLI 命令",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1396",
+    "title": "`/undo` is now an alias for `/rewind`",
+    "cat": "其他",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1397",
+    "title": "Improved `/model` to warn before switching models mid-conver...",
+    "cat": "模型与性能",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1398",
+    "title": "Improved `/resume` picker to default to sessions from the cu...",
+    "cat": "其他",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1399",
+    "title": "Improved error messages: server rate limits are now distingu...",
+    "cat": "CLI 命令",
+    "type": "新增"
+  }
+]

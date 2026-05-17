@@ -1,0 +1,362 @@
+[
+  {
+    "id": "feature-1213",
+    "title": "Fixed `--dangerously-skip-permissions` being silently downgr...",
+    "cat": "权限控制",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1214",
+    "title": "Fixed and hardened Bash tool permissions, tightening checks ...",
+    "cat": "权限控制",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1215",
+    "title": "Fixed permission rules with names matching JavaScript protot...",
+    "cat": "权限控制",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1216",
+    "title": "Fixed managed-settings allow rules remaining active after an...",
+    "cat": "配置管理",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1217",
+    "title": "Fixed `permissions.additionalDirectories` changes in setting...",
+    "cat": "权限控制",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1218",
+    "title": "Fixed removing a directory from `settings.permissions.additi...",
+    "cat": "权限控制",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1219",
+    "title": "Fixed MCP HTTP/SSE connections accumulating ~50 MB/hr of unr...",
+    "cat": "MCP 集成",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1220",
+    "title": "Fixed MCP OAuth `oauth.authServerMetadataUrl` not being hono...",
+    "cat": "权限控制",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1221",
+    "title": "Fixed 429 retries burning all attempts in ~13 seconds when t...",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1222",
+    "title": "Fixed rate-limit upgrade options disappearing after context ...",
+    "cat": "配置管理",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1223",
+    "title": "Fixed several `/resume` picker issues: `--resume <name>` ope...",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1224",
+    "title": "Fixed file-edit diffs disappearing on `--resume` when the ed...",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1225",
+    "title": "Fixed `--resume` cache misses and lost mid-turn input from a...",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1226",
+    "title": "Fixed messages typed while Claude is working not being persi...",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1227",
+    "title": "Fixed prompt-type `Stop`/`SubagentStop` hooks failing on lon...",
+    "cat": "Agent 系统",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1228",
+    "title": "Fixed subagents with worktree isolation or `cwd:` override l...",
+    "cat": "Agent 系统",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1229",
+    "title": "Fixed compaction writing duplicate multi-MB subagent transcr...",
+    "cat": "Agent 系统",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1230",
+    "title": "Fixed `claude plugin update` reporting \"already at the lates...",
+    "cat": "插件系统",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1231",
+    "title": "Fixed slash command picker breaking when a plugin's frontmat...",
+    "cat": "插件系统",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1232",
+    "title": "Fixed copying wrapped URLs in `NO_FLICKER` mode inserting sp...",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1233",
+    "title": "Fixed scroll rendering artifacts in `NO_FLICKER` mode when r...",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1234",
+    "title": "Fixed a crash in `NO_FLICKER` mode when hovering over MCP to...",
+    "cat": "MCP 集成",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1235",
+    "title": "Fixed a `NO_FLICKER` mode memory leak where API retries left...",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1236",
+    "title": "Fixed slow mouse-wheel scrolling in `NO_FLICKER` mode on Win...",
+    "cat": "终端体验",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1237",
+    "title": "Fixed custom status line not displaying in `NO_FLICKER` mode...",
+    "cat": "终端体验",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1238",
+    "title": "Fixed Shift+Enter and Alt/Cmd+arrow shortcuts not working in...",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1239",
+    "title": "Fixed Korean/Japanese/Unicode text becoming garbled when cop...",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1240",
+    "title": "Fixed Bedrock SigV4 authentication failing when `AWS_BEARER_...",
+    "cat": "权限控制",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1241",
+    "title": "Improved Accept Edits mode to auto-approve filesystem comman...",
+    "cat": "CLI 命令",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1242",
+    "title": "Improved auto mode and bypass-permissions mode to auto-appro...",
+    "cat": "权限控制",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1243",
+    "title": "Improved sandbox: `sandbox.network.allowMachLookup` now take...",
+    "cat": "安全沙箱",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1244",
+    "title": "Improved image handling: pasted and attached images are now ...",
+    "cat": "认证与安全",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1245",
+    "title": "Improved slash command and `@`-mention completion to trigger...",
+    "cat": "CLI 命令",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1246",
+    "title": "Improved Bridge sessions to show the local git repo, branch,...",
+    "cat": "其他",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1247",
+    "title": "Improved footer layout: indicators (Focus, notifications) no...",
+    "cat": "其他",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1248",
+    "title": "Improved context-low warning to show as a transient footer n...",
+    "cat": "其他",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1249",
+    "title": "Improved markdown blockquotes to show a continuous left bar ...",
+    "cat": "其他",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1250",
+    "title": "Improved session transcript size by skipping empty hook entr...",
+    "cat": "Hook 系统",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1251",
+    "title": "Improved transcript accuracy: per-block entries now carry th...",
+    "cat": "认证与安全",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1252",
+    "title": "Improved Bash tool OTEL tracing: subprocesses now inherit a ...",
+    "cat": "其他",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1253",
+    "title": "Updated `/claude-api` skill to cover Managed Agents alongsid...",
+    "cat": "Agent 系统",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1254",
+    "title": "Fixed Bedrock requests failing with `403 \"Authorization head...",
+    "cat": "权限控制",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1255",
+    "title": "Added interactive Google Vertex AI setup wizard accessible f...",
+    "cat": "权限控制",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1256",
+    "title": "Added `CLAUDE_CODE_PERFORCE_MODE` env var: when set, Edit/Wr...",
+    "cat": "其他",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1257",
+    "title": "Added Monitor tool for streaming events from background scri...",
+    "cat": "背景会话",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1258",
+    "title": "Added subprocess sandboxing with PID namespace isolation on ...",
+    "cat": "安全沙箱",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1259",
+    "title": "Added `--exclude-dynamic-system-prompt-sections` flag to pri...",
+    "cat": "提示词管理",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1260",
+    "title": "Added `workspace.git_worktree` to the status line JSON input...",
+    "cat": "工作树",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1261",
+    "title": "Added W3C `TRACEPARENT` env var to Bash tool subprocesses wh...",
+    "cat": "其他",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1262",
+    "title": "LSP: Claude Code now identifies itself to language servers v...",
+    "cat": "CLI 命令",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1263",
+    "title": "Fixed a Bash tool permission bypass where a backslash-escape...",
+    "cat": "权限控制",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1264",
+    "title": "Fixed compound Bash commands bypassing forced permission pro...",
+    "cat": "权限控制",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1265",
+    "title": "Fixed read-only commands with env-var prefixes not prompting...",
+    "cat": "CLI 命令",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1266",
+    "title": "Fixed redirects to `/dev/tcp/...` or `/dev/udp/...` not prom...",
+    "cat": "提示词管理",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1267",
+    "title": "Fixed stalled streaming responses timing out instead of fall...",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1268",
+    "title": "Fixed 429 retries burning all attempts in ~13s when the serv...",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1269",
+    "title": "Fixed MCP OAuth `oauth.authServerMetadataUrl` config overrid...",
+    "cat": "权限控制",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1270",
+    "title": "Fixed capital letters being dropped to lowercase on xterm an...",
+    "cat": "终端体验",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1271",
+    "title": "Fixed macOS text replacements deleting the trigger word inst...",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1272",
+    "title": "Fixed `--dangerously-skip-permissions` being silently downgr...",
+    "cat": "权限控制",
+    "type": "修复"
+  }
+]

@@ -1,0 +1,362 @@
+[
+  {
+    "id": "feature-1273",
+    "title": "Fixed managed-settings allow rules remaining active after an...",
+    "cat": "配置管理",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1274",
+    "title": "Fixed `permissions.additionalDirectories` changes not applyi...",
+    "cat": "权限控制",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1275",
+    "title": "Fixed removing a directory from `additionalDirectories` revo...",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1276",
+    "title": "Fixed `Bash(cmd:*)` and `Bash(git commit *)` wildcard permis...",
+    "cat": "权限控制",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1277",
+    "title": "Fixed `Bash(...)` deny rules being downgraded to a prompt fo...",
+    "cat": "CLI 命令",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1278",
+    "title": "Fixed false Bash permission prompts for `cut -d /`, `paste -...",
+    "cat": "权限控制",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1279",
+    "title": "Fixed agent team members not inheriting the leader's permiss...",
+    "cat": "Agent 系统",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1280",
+    "title": "Fixed a crash in fullscreen mode when hovering over MCP tool...",
+    "cat": "MCP 集成",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1281",
+    "title": "Fixed copying wrapped URLs in fullscreen mode inserting spac...",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1282",
+    "title": "Fixed file-edit diffs disappearing from the UI on `--resume`...",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1283",
+    "title": "Fixed several `/resume` picker issues: `--resume <name>` ope...",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1284",
+    "title": "Fixed `/export` not honoring absolute paths and `~`, and sil...",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1285",
+    "title": "Fixed `/effort max` being denied for unknown or future model...",
+    "cat": "模型与性能",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1286",
+    "title": "Fixed rate-limit upsell text being hidden after message remo...",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1287",
+    "title": "Fixed MCP tools with `_meta[\"anthropic/maxResultSizeChars\"]`...",
+    "cat": "MCP 集成",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1288",
+    "title": "Fixed voice mode leaking dozens of space characters into the...",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1289",
+    "title": "Fixed `DISABLE_AUTOUPDATER` not fully suppressing the npm re...",
+    "cat": "安装与更新",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1290",
+    "title": "Fixed a memory leak where Remote Control permission handler ...",
+    "cat": "权限控制",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1291",
+    "title": "Fixed background subagents that fail with an error not repor...",
+    "cat": "Agent 系统",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1292",
+    "title": "Fixed prompt-type Stop/SubagentStop hooks failing on long se...",
+    "cat": "Agent 系统",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1293",
+    "title": "Fixed feedback survey rendering when dismissed",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1294",
+    "title": "Fixed Bash `grep -f FILE` / `rg -f FILE` not prompting when ...",
+    "cat": "提示词管理",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1295",
+    "title": "Fixed stale subagent worktree cleanup removing worktrees tha...",
+    "cat": "Agent 系统",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1296",
+    "title": "Fixed `sandbox.network.allowMachLookup` not taking effect on...",
+    "cat": "安全沙箱",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1297",
+    "title": "Improved `/resume` filter hint labels and added project/work...",
+    "cat": "工作树",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1298",
+    "title": "Improved footer indicators (Focus, notifications) to stay on...",
+    "cat": "终端体验",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1299",
+    "title": "Improved `/agents` with a tabbed layout: a Running tab shows...",
+    "cat": "Agent 系统",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1300",
+    "title": "Improved `/reload-plugins` to pick up plugin-provided skills...",
+    "cat": "插件系统",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1301",
+    "title": "Improved Accept Edits mode to auto-approve filesystem comman...",
+    "cat": "CLI 命令",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1302",
+    "title": "Improved Vim mode: `j`/`k` in NORMAL mode now navigate histo...",
+    "cat": "其他",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1303",
+    "title": "Improved hook errors in the transcript to include the first ...",
+    "cat": "Hook 系统",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1304",
+    "title": "Improved OTEL tracing: interaction spans now correctly wrap ...",
+    "cat": "其他",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1305",
+    "title": "Improved transcript entries to carry final token usage inste...",
+    "cat": "认证与安全",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1306",
+    "title": "Updated the `/claude-api` skill to cover Managed Agents alon...",
+    "cat": "Agent 系统",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1307",
+    "title": "[VSCode] Fixed false-positive \"requires git-bash\" error on W...",
+    "cat": "安装与更新",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1308",
+    "title": "Fixed `CLAUDE_CODE_MAX_CONTEXT_TOKENS` to honor `DISABLE_COM...",
+    "cat": "认证与安全",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1309",
+    "title": "Dropped `/compact` hints when `DISABLE_COMPACT` is set.",
+    "cat": "其他",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1310",
+    "title": "Added `/team-onboarding` command to generate a teammate ramp...",
+    "cat": "CLI 命令",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1311",
+    "title": "Added OS CA certificate store trust by default, so enterpris...",
+    "cat": "其他",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1312",
+    "title": "`/ultraplan` and other remote-session features now auto-crea...",
+    "cat": "其他",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1313",
+    "title": "Improved brief mode to retry once when Claude responds with ...",
+    "cat": "其他",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1314",
+    "title": "Improved focus mode: Claude now writes more self-contained s...",
+    "cat": "其他",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1315",
+    "title": "Improved tool-not-available errors to explain why and how to...",
+    "cat": "模型与性能",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1316",
+    "title": "Improved rate-limit retry messages to show which limit was h...",
+    "cat": "其他",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1317",
+    "title": "Improved refusal error messages to include the API-provided ...",
+    "cat": "其他",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1318",
+    "title": "Improved `claude -p --resume <name>` to accept session title...",
+    "cat": "其他",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1319",
+    "title": "Improved settings resilience: an unrecognized hook event nam...",
+    "cat": "Hook 系统",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1320",
+    "title": "Improved plugin hooks from plugins force-enabled by managed ...",
+    "cat": "插件系统",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1321",
+    "title": "Improved `/plugin` and `claude plugin update` to show a warn...",
+    "cat": "插件系统",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1322",
+    "title": "Improved plan mode to hide the \"Refine with Ultraplan\" optio...",
+    "cat": "权限控制",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1323",
+    "title": "Improved beta tracing to honor `OTEL_LOG_USER_PROMPTS`, `OTE...",
+    "cat": "提示词管理",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1324",
+    "title": "Improved SDK `query()` to clean up subprocess and temp files...",
+    "cat": "其他",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1325",
+    "title": "Fixed a command injection vulnerability in the POSIX `which`...",
+    "cat": "CLI 命令",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1326",
+    "title": "Fixed a memory leak where long sessions retained dozens of h...",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1327",
+    "title": "Fixed `--resume`/`--continue` losing conversation context on...",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1328",
+    "title": "Fixed `--resume` chain recovery bridging into an unrelated s...",
+    "cat": "Agent 系统",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1329",
+    "title": "Fixed a crash on `--resume` when a persisted Edit/Write tool...",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1330",
+    "title": "Fixed a hardcoded 5-minute request timeout that aborted slow...",
+    "cat": "模型与性能",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1331",
+    "title": "Fixed `permissions.deny` rules not overriding a PreToolUse h...",
+    "cat": "Hook 系统",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1332",
+    "title": "Fixed `--setting-sources` without `user` causing background ...",
+    "cat": "配置管理",
+    "type": "修复"
+  }
+]

@@ -1,0 +1,260 @@
+[
+  {
+    "id": "feature-1050",
+    "title": "Reduced UI stutter when compaction triggers on large session",
+    "cat": "其他",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1051",
+    "title": "Added `X-Claude-Code-Session-Id` header to API requests so p",
+    "cat": "其他",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1052",
+    "title": "Added `.jj` and `.sl` to VCS directory exclusion lists so Gr",
+    "cat": "其他",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1053",
+    "title": "Fixed `--resume` failing with \"tool_use ids were found witho",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1054",
+    "title": "Fixed Write/Edit/Read failing on files outside the project r",
+    "cat": "配置管理",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1055",
+    "title": "Fixed unnecessary config disk writes on every skill invocati",
+    "cat": "模型与性能",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1056",
+    "title": "Fixed potential out-of-memory crash when using `/feedback` o",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1057",
+    "title": "Fixed `--bare` mode dropping MCP tools in interactive sessio",
+    "cat": "MCP 集成",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1058",
+    "title": "Fixed the `c` shortcut copying only ~20 characters of the OA",
+    "cat": "权限控制",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1059",
+    "title": "Fixed masked input (e.g., OAuth code paste) leaking the star",
+    "cat": "权限控制",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1060",
+    "title": "Fixed official marketplace plugin scripts failing with \"Perm",
+    "cat": "插件系统",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1061",
+    "title": "Fixed statusline showing another session's model when runnin",
+    "cat": "模型与性能",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1062",
+    "title": "Fixed scroll not following new messages after wheel scroll o",
+    "cat": "CLI 命令",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1063",
+    "title": "Fixed `/plugin` uninstall dialog: pressing `n` now correctly",
+    "cat": "插件系统",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1064",
+    "title": "Fixed a regression where pressing Enter after clicking could",
+    "cat": "CLI 命令",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1065",
+    "title": "Fixed `ultrathink` hint lingering after deleting the keyword",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1066",
+    "title": "Fixed memory growth in long sessions from markdown/highlight",
+    "cat": "主题与显示",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1067",
+    "title": "Reduced startup event-loop stalls when many claude.ai MCP co",
+    "cat": "MCP 集成",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1068",
+    "title": "Reduced token overhead when mentioning files with `@` — raw ",
+    "cat": "认证与安全",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1069",
+    "title": "Improved prompt cache hit rate for Bedrock, Vertex, and Foun",
+    "cat": "提示词管理",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1070",
+    "title": "Memory filenames in the \"Saved N memories\" notice now highli",
+    "cat": "CLI 命令",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1071",
+    "title": "Skill descriptions in the `/skills` listing are now capped a",
+    "cat": "其他",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1072",
+    "title": "Changed `/skills` menu to sort alphabetically for easier sca",
+    "cat": "其他",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1073",
+    "title": "Auto mode now shows \"unavailable for your plan\" when disable",
+    "cat": "其他",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1074",
+    "title": "[VSCode] Fixed extension incorrectly showing \"Not responding",
+    "cat": "其他",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1075",
+    "title": "[VSCode] Fixed extension defaulting Max plan users to Sonnet",
+    "cat": "权限控制",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1076",
+    "title": "Read tool now uses compact line-number format and deduplicat",
+    "cat": "认证与安全",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1077",
+    "title": "Fixed messages in Cowork Dispatch not getting delivered",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1078",
+    "title": "Added `\"defer\"` permission decision to `PreToolUse` hooks — ",
+    "cat": "Hook 系统",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1079",
+    "title": "Added `CLAUDE_CODE_NO_FLICKER=1` environment variable to opt",
+    "cat": "其他",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1080",
+    "title": "Added `PermissionDenied` hook that fires after auto mode cla",
+    "cat": "Hook 系统",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1081",
+    "title": "Added named subagents to `@` mention typeahead suggestions",
+    "cat": "Agent 系统",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1082",
+    "title": "Added `MCP_CONNECTION_NONBLOCKING=true` for `-p` mode to ski",
+    "cat": "MCP 集成",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1083",
+    "title": "Auto mode: denied commands now show a notification and appea",
+    "cat": "权限控制",
+    "type": "新增"
+  },
+  {
+    "id": "feature-1084",
+    "title": "Fixed `Edit(//path/**)` and `Read(//path/**)` allow rules to",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1085",
+    "title": "Fixed voice push-to-talk not activating for some modifier-co",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1086",
+    "title": "Fixed Edit/Write tools doubling CRLF on Windows and strippin",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1087",
+    "title": "Fixed `StructuredOutput` schema cache bug causing ~50% failu",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1088",
+    "title": "Fixed memory leak where large JSON inputs were retained as L",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1089",
+    "title": "Fixed a crash when removing a message from very large sessio",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1090",
+    "title": "Fixed LSP server zombie state after crash — server now resta",
+    "cat": "其他",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1091",
+    "title": "Fixed prompt history entries containing CJK or emoji being s",
+    "cat": "提示词管理",
+    "type": "修复"
+  },
+  {
+    "id": "feature-1092",
+    "title": "Fixed `/stats` undercounting tokens by excluding subagent us",
+    "cat": "Agent 系统",
+    "type": "修复"
+  }
+]
